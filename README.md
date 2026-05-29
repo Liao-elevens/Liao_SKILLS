@@ -1,5 +1,7 @@
 # Liao Skills
 
+[![skills.sh](https://skills.sh/b/Liao-elevens/Liao_SKILLS)](https://skills.sh/Liao-elevens/Liao_SKILLS)
+
 Reusable agent skills maintained by Liao-elevens. This repository is a multi-skill collection for `skills.sh`, Codex, Cursor, and other tools that can read `SKILL.md`.
 
 Each skill lives under:
