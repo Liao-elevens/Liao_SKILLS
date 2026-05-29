@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Local editor and agent runtime state
+.idea/
+.vscode/
+*.log
+
+# Build/package artifacts
+dist/
+build/
+coverage/
+*.tgz

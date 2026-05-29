@@ -1,0 +1,37 @@
+{
+  "name": "liao-skills",
+  "version": "1.0.0",
+  "description": "Reusable agent skills maintained by Liao-elevens.",
+  "author": {
+    "name": "Liao-elevens"
+  },
+  "repository": "https://github.com/Liao-elevens/Liao_SKILLS",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "frontend",
+    "architecture",
+    "codex",
+    "skills",
+    "ai-assisted-development"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Liao Skills",
+    "shortDescription": "Reusable agent skills for coding workflows.",
+    "longDescription": "A multi-skill collection for agent-assisted development. Includes frontend architecture rules for module splitting, shared boundaries, routing, API integration, state ownership, type contracts, UI library usage, performance, and change reporting.",
+    "developerName": "Liao-elevens",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Frontend architecture guidance",
+      "Code review guidance",
+      "Skill instructions"
+    ],
+    "defaultPrompt": [
+      "Use frontend dev rules for this feature.",
+      "Review this frontend change with architecture rules.",
+      "Refactor this page using module split rules."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
