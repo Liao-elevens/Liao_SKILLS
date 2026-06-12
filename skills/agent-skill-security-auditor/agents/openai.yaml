@@ -1,0 +1,8 @@
+interface:
+  display_name: "Agent Skill Security Auditor"
+  short_description: "Audit agent skills for prompt, script, dependency, and install risks."
+  default_prompt: "Use $agent-skill-security-auditor to review this skill before installation or publication and report security findings with concrete fixes."
+
+policy:
+  allow_implicit_invocation: true
+

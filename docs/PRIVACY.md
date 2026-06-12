@@ -1,0 +1,11 @@
+# Privacy Policy
+
+Liao Skills is a Codex plugin that packages local skill instructions for engineering workflows, including frontend development guidance and agent skill security auditing.
+
+The plugin does not include apps, connectors, MCP servers, network services, telemetry, analytics, or data collection code. It does not transmit repository contents, prompts, files, credentials, or personal data to Liao-elevens.
+
+The `agent-skill-security-auditor` skill includes a local static triage script, `scripts/scan_skill.py`. When a user chooses to run it, the script reads files under the user-provided skill or repository path, scans local text files for risky patterns, and prints findings locally. It does not make network requests, upload data, or read paths outside the user-provided scan target.
+
+When installed in Codex, the plugin content is read locally by Codex according to the user's Codex environment, workspace permissions, and installed marketplace configuration.
+
+If future versions add integrations that access external services or user data, this policy should be updated before release.

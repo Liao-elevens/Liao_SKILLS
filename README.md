@@ -12,61 +12,70 @@ skills/<skill-name>/SKILL.md
 
 ## Skills
 
-### ai-frontend-dev-rules
-
-Technology-neutral frontend architecture rules for AI-assisted development.
-
-Use it when creating, extending, refactoring, or reviewing frontend features. It covers module splitting, shared boundaries, routing, type/schema placement, API integration, state/data ownership, data mapping, UI library usage, performance checks, and change reporting.
+| Skill | Purpose | Use when |
+| --- | --- | --- |
+| [`ai-frontend-dev-rules`](skills/ai-frontend-dev-rules/SKILL.md) | Technology-neutral frontend architecture rules. | Creating, refactoring, or reviewing frontend features. |
+| [`agent-skill-security-auditor`](skills/agent-skill-security-auditor/SKILL.md) | Lightweight V2 security auditor for agent skills. | Reviewing skills before installation, publication, update, or merge. |
 
 ## Install
 
 Install a specific skill with:
 
 ```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill ai-frontend-dev-rules
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name>
 ```
 
 Codex users can target Codex explicitly:
 
 ```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill ai-frontend-dev-rules -a codex
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name> -a codex
 ```
 
-Cursor users can target Cursor explicitly:
+Cursor and Claude Code users can target their agent explicitly:
 
 ```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill ai-frontend-dev-rules -a cursor
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name> -a cursor
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name> -a claude-code
 ```
 
-For a global Cursor install:
+Use `-g` for a global install:
 
 ```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill ai-frontend-dev-rules -a cursor -g
-```
-
-Claude Code users can target Claude Code explicitly:
-
-```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill ai-frontend-dev-rules -a claude-code
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name> -a <agent> -g
 ```
 
 Manual Claude Code install also works by placing this folder in a Claude skills directory:
 
 ```text
-skills/ai-frontend-dev-rules/ -> ~/.claude/skills/ai-frontend-dev-rules/
+skills/<skill-name>/ -> ~/.claude/skills/<skill-name>/
 ```
 
 For a project-local install, use:
 
 ```text
-skills/ai-frontend-dev-rules/ -> .claude/skills/ai-frontend-dev-rules/
+skills/<skill-name>/ -> .claude/skills/<skill-name>/
 ```
 
-Codex users can also use this repository as a Codex plugin. The plugin manifest is:
+Codex users can also use this repository as a Codex plugin marketplace. The marketplace entry points to the self-contained plugin package:
 
 ```text
-.codex-plugin/plugin.json
+plugins/liao-skills/.codex-plugin/plugin.json
 ```
+
+Add this repository as a Codex plugin marketplace:
+
+```bash
+codex plugin marketplace add Liao-elevens/Liao_SKILLS --ref main
+```
+
+Then install the `Liao Skills` plugin from the Codex plugin directory. After installation, use:
+
+```text
+$ai-frontend-dev-rules
+$agent-skill-security-auditor
+```
+
+OpenAI's official public Plugin Directory does not currently support self-serve third-party publishing. This repository is prepared for Git-backed marketplace distribution and future official review by including Codex plugin metadata, marketplace metadata, privacy terms, display assets, and install instructions.
 
 ## Use
 
@@ -78,6 +87,14 @@ Use $ai-frontend-dev-rules to implement this dashboard and keep the entry file t
 
 ```text
 Use $ai-frontend-dev-rules to review this frontend change for module boundaries, API usage, state ownership, and UI library compatibility.
+```
+
+```text
+Use $agent-skill-security-auditor to review this third-party skill before I install it.
+```
+
+```text
+Use $agent-skill-security-auditor to audit the skill I am about to publish and suggest fixes for any security findings.
 ```
 
 ## Notes
@@ -92,12 +109,6 @@ Add each new skill as a separate folder:
 
 ```text
 skills/<skill-name>/SKILL.md
-```
-
-Then install it with:
-
-```bash
-npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name>
 ```
 
 ## License

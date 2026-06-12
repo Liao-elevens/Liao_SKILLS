@@ -8,6 +8,10 @@ node_modules/
 .idea/
 .vscode/
 *.log
+__pycache__/
+*.pyc
+logo-concepts.*
+assets/brand-concepts/
 
 # Build/package artifacts
 dist/
