@@ -1,6 +1,6 @@
 {
   "name": "liao-skills",
-  "version": "1.0.0+codex.20260626090923",
+  "version": "1.0.0+codex.20260716092740",
   "description": "Reusable agent skills maintained by Liao-elevens.",
   "author": {
     "name": "Liao-elevens",
@@ -12,6 +12,7 @@
   "keywords": [
     "ai-frontend-dev-rules",
     "agent-skill-security-auditor",
+    "novel-workbench",
     "agent-skills",
     "codex-skills",
     "codex-plugin",
@@ -30,6 +31,9 @@
     "supply-chain",
     "prompt-injection",
     "secret-scanning",
+    "novel-writing",
+    "creative-writing",
+    "chinese-fiction",
     "codex",
     "skills",
     "ai-assisted-development"
@@ -37,8 +41,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Liao Skills",
-    "shortDescription": "Reusable engineering skills for AI-assisted coding.",
-    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused engineering workflows such as frontend architecture guidance and agent skill security auditing, with each skill documented under the skills directory.",
+    "shortDescription": "Reusable coding, security, and writing skills.",
+    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused workflows for frontend architecture, agent skill security auditing, and end-to-end Chinese novel creation, with each skill documented under the skills directory.",
     "developerName": "Liao-elevens",
     "category": "Developer Tools",
     "capabilities": [
@@ -46,6 +50,7 @@
       "Code review guidance",
       "Agent skill security audit",
       "Static triage for skill scripts and dependencies",
+      "Chinese novel planning, drafting, review, and finalization",
       "Reusable skill instructions"
     ],
     "websiteURL": "https://github.com/Liao-elevens/Liao_SKILLS",
@@ -54,7 +59,8 @@
     "defaultPrompt": [
       "Use $ai-frontend-dev-rules to implement this page.",
       "Review this frontend change with $ai-frontend-dev-rules.",
-      "Use $agent-skill-security-auditor to review this third-party skill before installation."
+      "Use $agent-skill-security-auditor to review this third-party skill before installation.",
+      "Use $novel-workbench to plan and write a Chinese novel."
     ],
     "brandColor": "#FF7A2F",
     "composerIcon": "./assets/logo.png",

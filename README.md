@@ -16,6 +16,7 @@ skills/<skill-name>/SKILL.md
 | --- | --- | --- |
 | [`ai-frontend-dev-rules`](skills/ai-frontend-dev-rules/SKILL.md) | Technology-neutral frontend architecture rules. | Creating, refactoring, or reviewing frontend features. |
 | [`agent-skill-security-auditor`](skills/agent-skill-security-auditor/SKILL.md) | Lightweight V2 security auditor for agent skills. | Reviewing skills before installation, publication, update, or merge. |
+| [`novel-workbench`](skills/novel-workbench/references/usage/使用说明-空白项目完整流程.md) | End-to-end Chinese novel creation workbench. | Planning, drafting, continuing, reviewing, polishing, or packaging Chinese fiction. |
 
 ## Install
 
@@ -23,6 +24,12 @@ Install a specific skill with:
 
 ```bash
 npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill <skill-name>
+```
+
+For example, install `novel-workbench` with:
+
+```bash
+npx skills add https://github.com/Liao-elevens/Liao_SKILLS --skill novel-workbench
 ```
 
 Codex users can target Codex explicitly:
@@ -73,6 +80,7 @@ Then install the `Liao Skills` plugin from the Codex plugin directory. After ins
 ```text
 $ai-frontend-dev-rules
 $agent-skill-security-auditor
+$novel-workbench
 ```
 
 OpenAI's official public Plugin Directory does not currently support self-serve third-party publishing. This repository is prepared for Git-backed marketplace distribution and future official review by including Codex plugin metadata, marketplace metadata, privacy terms, display assets, and install instructions.
@@ -95,6 +103,10 @@ Use $agent-skill-security-auditor to review this third-party skill before I inst
 
 ```text
 Use $agent-skill-security-auditor to audit the skill I am about to publish and suggest fixes for any security findings.
+```
+
+```text
+Use $novel-workbench to plan and write a Chinese novel from the initial interview through final manuscript packaging.
 ```
 
 ## Notes

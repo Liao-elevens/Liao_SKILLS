@@ -1,0 +1,7 @@
+interface:
+  display_name: "小说创作工作台"
+  short_description: "从需求访谈、故事大纲到逐章写作和出版整理的中文小说全流程工作台"
+  default_prompt: "使用 $novel-workbench 帮我规划并完成一部中文小说。"
+
+policy:
+  allow_implicit_invocation: true

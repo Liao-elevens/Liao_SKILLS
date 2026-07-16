@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "novelName": "",
+  "projectRoot": "./novel-projects/YYYYMMDD-HHmmss-title",
+  "totalChapters": 0,
+  "chapterSpec": {
+    "minChineseChars": 3000,
+    "targetChineseChars": 4000,
+    "maxChineseChars": 5000
+  },
+  "createdAt": "",
+  "updatedAt": "",
+  "projectStatus": "planning",
+  "mode": "serial",
+  "activeScope": {
+    "type": "full_novel",
+    "startChapter": 1,
+    "endChapter": 0,
+    "stopAfterScope": true,
+    "status": "pending"
+  },
+  "scopeHistory": [],
+  "chapters": [
+    {
+      "chapterNumber": 1,
+      "title": "",
+      "path": "正文/第一卷/第01章-标题.md",
+      "status": "pending",
+      "actualChineseChars": null,
+      "checks": {
+        "wordcount": false,
+        "quality": false,
+        "continuity": false,
+        "pureManuscript": false
+      },
+      "retryCount": 0,
+      "updatedAt": ""
+    }
+  ]
+}
