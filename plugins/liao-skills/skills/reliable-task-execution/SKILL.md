@@ -30,6 +30,19 @@ Before implementation, align these items when relevant:
 
 End a plan awaiting approval with a direct question asking whether to execute it.
 
+### Control Git scope
+
+Before Git writes, confirm any material scope the user has not made explicit:
+
+- files included in the commit;
+- whether creating a commit is authorized;
+- target remote and target branch;
+- whether creating or switching branches is authorized;
+- whether pushing is authorized;
+- whether opening a pull request is authorized.
+
+Authorization to commit or push does not authorize choosing a different target branch, creating or deleting a branch, opening a pull request, merging, rebasing, or rewriting history. Do not infer a branch strategy from tooling defaults. If the user asks to push without naming a target branch, inspect the current branch and ask before creating, switching, or selecting one.
+
 ## Classify the task
 
 Use one primary class and combine workflows only when necessary:
@@ -67,7 +80,7 @@ Use before broad, shared, or uncertain code changes. Inspect the relevant struct
 | L2 | Cross-module effect or broad regression surface | Use separable, independently verifiable change units |
 | L3 | Public interface, shared schema, common dependency, or production data | Present the plan and obtain specific approval first |
 
-Name the most likely failure points and how to verify them. Do not create commits unless the user authorizes Git writes.
+Name the most likely failure points and how to verify them. Apply the Git scope rules before any commit or related Git write.
 
 ### Coordinate independent workstreams
 
