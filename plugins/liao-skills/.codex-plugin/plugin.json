@@ -1,7 +1,7 @@
 {
   "name": "liao-skills",
-  "version": "1.0.0+codex.20260716092740",
-  "description": "Reusable agent skills maintained by Liao-elevens.",
+  "version": "1.0.0+codex.20260805125103",
+  "description": "Reliable execution, coding, security, and writing skills maintained by Liao-elevens.",
   "author": {
     "name": "Liao-elevens",
     "url": "https://github.com/Liao-elevens"
@@ -13,6 +13,10 @@
     "ai-frontend-dev-rules",
     "agent-skill-security-auditor",
     "novel-workbench",
+    "reliable-task-execution",
+    "task-reliability",
+    "execution-authorization",
+    "change-validation",
     "agent-skills",
     "codex-skills",
     "codex-plugin",
@@ -41,8 +45,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Liao Skills",
-    "shortDescription": "Reusable coding, security, and writing skills.",
-    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused workflows for frontend architecture, agent skill security auditing, and end-to-end Chinese novel creation, with each skill documented under the skills directory.",
+    "shortDescription": "Reliable execution, coding, security, and writing skills.",
+    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused workflows for reliable task execution, frontend architecture, agent skill security auditing, and end-to-end Chinese novel creation, with each skill documented under the skills directory.",
     "developerName": "Liao-elevens",
     "category": "Developer Tools",
     "capabilities": [
@@ -51,16 +55,16 @@
       "Agent skill security audit",
       "Static triage for skill scripts and dependencies",
       "Chinese novel planning, drafting, review, and finalization",
+      "Reliable task planning, authorization, execution, and validation",
       "Reusable skill instructions"
     ],
     "websiteURL": "https://github.com/Liao-elevens/Liao_SKILLS",
     "privacyPolicyURL": "https://github.com/Liao-elevens/Liao_SKILLS/blob/main/docs/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/Liao-elevens/Liao_SKILLS/blob/main/docs/TERMS.md",
     "defaultPrompt": [
+      "Use $reliable-task-execution to align this change and verify the result.",
       "Use $ai-frontend-dev-rules to implement this page.",
-      "Review this frontend change with $ai-frontend-dev-rules.",
-      "Use $agent-skill-security-auditor to review this third-party skill before installation.",
-      "Use $novel-workbench to plan and write a Chinese novel."
+      "Use $agent-skill-security-auditor to review this third-party skill before installation."
     ],
     "brandColor": "#FF7A2F",
     "composerIcon": "./assets/logo.png",
