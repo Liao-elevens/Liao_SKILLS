@@ -1,6 +1,6 @@
 ---
 name: reliable-task-execution
-description: Improve reliability when planning or executing tasks that may produce code, file, configuration, data, or external-system changes, and for complex, ambiguous, multi-step, or high-impact work. Use when Codex needs to confirm execution authorization, match planning and validation depth to risk, assess code-change impact, coordinate independent workstreams, red-team a proposal, or test a real user journey. Apply a lightweight workflow to simple authorized changes and deeper workflows only when risk or uncertainty requires them. Do not use for simple read-only questions.
+description: Improve reliability when planning or executing tasks that may produce code, file, configuration, data, or external-system changes, and for complex, ambiguous, multi-step, or high-impact work. Use when Codex needs to confirm execution authorization, refine ambiguous requirements, brainstorm alternatives, critically interview the user about consequential decisions, match planning and validation depth to risk, assess code-change impact, coordinate independent workstreams, red-team a proposal, or test a real user journey. Apply the smallest sufficient workflow; do not use for simple read-only questions.
 ---
 
 # Reliable Task Execution
@@ -56,11 +56,49 @@ Use one primary class and combine workflows only when necessary:
 
 Identify missing information, ambiguity, and the most fragile assumption. Ask the user only when the answer cannot be discovered safely and a reasonable assumption could materially change the result. Report decision-relevant reasoning, evidence, assumptions, and intermediate conclusions; do not expose private chain-of-thought.
 
+## Refine requirements and design
+
+Inspect available project context before questioning the user. Resolve discoverable facts through safe read-only inspection, then select one refinement mode. Do not run every mode in sequence by default.
+
+| Mode | Use when | Interaction |
+| --- | --- | --- |
+| Targeted clarification | One to three material gaps block an otherwise clear task | Ask only the blocking questions, include a recommendation when useful, then continue |
+| Brainstorm | The goal is rough, behavior or boundaries are undecided, or several approaches are credible | Explore one decision area at a time, compare alternatives, and shape a coherent design with the user |
+| Grill | The user explicitly asks to be challenged, a consequential decision rests on weak assumptions, or brainstorming leaves a critical uncertainty unresolved | Challenge one material assumption or tradeoff per turn and follow the answer until the decision is explicit |
+
+Skip refinement when the request, project conventions, and acceptance criteria already make the implementation path clear.
+
+### Clarify targeted gaps
+
+- Ask no more than one to three related questions at once.
+- Ask only questions whose answers could materially change scope, architecture, behavior, risk, or acceptance criteria.
+- Give a recommended default and its main consequence when that helps the user decide.
+- Continue immediately after the blocking gaps are resolved; do not reconfirm settled choices.
+
+### Brainstorm a design
+
+1. Establish the objective, affected users or consumers, current context, and constraints.
+2. Explore one decision area at a time. Prefer a focused question over a large questionnaire.
+3. Present two or three materially different approaches when credible alternatives exist. Lead with the recommendation and explain the decisive tradeoff.
+4. Develop the design in readable sections and seek confirmation only at points that would change downstream work.
+5. Cover relevant boundaries, data or interaction flow, failure behavior, acceptance criteria, and exclusions.
+6. Summarize the resulting design and any remaining assumptions. Treat design approval as alignment, not implementation authorization.
+
+### Grill consequential decisions
+
+- Ask one question per turn and target the highest-impact unresolved decision, weakest assumption, missing evidence, or avoided tradeoff.
+- Build on the user's answer when it exposes another material assumption; do not follow a generic checklist.
+- Make the consequence concrete, such as the affected interface, failure mode, cost, or user experience.
+- After roughly three to five material questions, summarize resolved decisions and remaining uncertainty so the user can continue, stop, or accept an assumption.
+- Stop when further questions would not change the design, when the user asks to stop, or when the remaining uncertainty is explicitly accepted.
+
+Finish refinement when the objective, scope, constraints, recommended approach, major tradeoffs, acceptance criteria, and material assumptions are sufficiently clear for the next stage. Do not seek certainty that is unnecessary for the task's risk.
+
 ## Select a workflow
 
 ### Red-team a plan
 
-Use for consequential plans, architecture choices, or expensive commitments:
+Use after a plan or design exists when it involves consequential architecture choices, expensive commitments, or a broad failure surface. Brainstorming forms a design, grilling resolves decisions, and red-teaming evaluates the resulting proposal; combine them only when each adds distinct value.
 
 1. Restate the objective and constraints concisely.
 2. Assume the plan failed and identify the three most plausible causes.
@@ -121,6 +159,14 @@ For a substantial plan include:
 - acceptance criteria;
 - risks and unresolved issues;
 - whether execution authorization is still required.
+
+After requirement refinement, include a compact decision snapshot when it helps preserve alignment:
+
+- confirmed decisions;
+- accepted assumptions and unverified facts;
+- recommended approach and decisive tradeoffs;
+- material risks or unresolved issues;
+- next step and whether implementation authorization is still required.
 
 ## Verify and finish
 
