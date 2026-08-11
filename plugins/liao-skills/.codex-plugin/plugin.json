@@ -1,6 +1,6 @@
 {
   "name": "liao-skills",
-  "version": "1.0.0+codex.20260811032235",
+  "version": "1.0.0+codex.20260811033157",
   "description": "Reliable execution, coding, security, and writing skills maintained by Liao-elevens.",
   "author": {
     "name": "Liao-elevens",
@@ -46,7 +46,7 @@
   "interface": {
     "displayName": "Liao Skills",
     "shortDescription": "Reliable execution, coding, security, and writing skills.",
-    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused workflows for reliable task execution, frontend architecture, agent skill security auditing, and end-to-end Chinese novel creation, with each skill documented under the skills directory.",
+    "longDescription": "Liao Skills is a multi-skill collection for Codex and compatible agents. It packages focused workflows for requirement refinement and reliable task execution, frontend architecture, agent skill security auditing, and end-to-end Chinese novel creation, with each skill documented under the skills directory.",
     "developerName": "Liao-elevens",
     "category": "Developer Tools",
     "capabilities": [
@@ -55,6 +55,7 @@
       "Agent skill security audit",
       "Static triage for skill scripts and dependencies",
       "Chinese novel planning, drafting, review, and finalization",
+      "Requirement refinement, brainstorming, and critical plan interrogation",
       "Reliable task planning, authorization, execution, and validation",
       "Reusable skill instructions"
     ],
@@ -62,7 +63,7 @@
     "privacyPolicyURL": "https://github.com/Liao-elevens/Liao_SKILLS/blob/main/docs/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/Liao-elevens/Liao_SKILLS/blob/main/docs/TERMS.md",
     "defaultPrompt": [
-      "Use $reliable-task-execution to align this change and verify the result.",
+      "Use $reliable-task-execution to refine this request, align the change, and verify the result.",
       "Use $ai-frontend-dev-rules to implement this page.",
       "Use $agent-skill-security-auditor to review this third-party skill before installation."
     ],

@@ -9,6 +9,8 @@ Choose the smallest workflow that makes the result dependable. Do not turn a sim
 
 Match the user's language unless they request otherwise.
 
+When the user asks how to use this skill, read [the complete usage guide](references/usage/使用说明.md).
+
 ## Apply the execution gate
 
 Distinguish discussion from authorization:

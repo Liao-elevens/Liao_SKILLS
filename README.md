@@ -17,7 +17,7 @@ skills/<skill-name>/SKILL.md
 | [`ai-frontend-dev-rules`](skills/ai-frontend-dev-rules/SKILL.md) | Technology-neutral frontend architecture rules. | Creating, refactoring, or reviewing frontend features. |
 | [`agent-skill-security-auditor`](skills/agent-skill-security-auditor/SKILL.md) | Lightweight V2 security auditor for agent skills. | Reviewing skills before installation, publication, update, or merge. |
 | [`novel-workbench`](skills/novel-workbench/references/usage/使用说明-空白项目完整流程.md) | End-to-end Chinese novel creation workbench. | Planning, drafting, continuing, reviewing, polishing, or packaging Chinese fiction. |
-| [`reliable-task-execution`](skills/reliable-task-execution/SKILL.md) | Reliability workflow for planning, authorization, execution, and validation. | Making project changes or handling complex, ambiguous, multi-step, or high-impact tasks. |
+| [`reliable-task-execution`](skills/reliable-task-execution/references/usage/使用说明.md) | Reliability workflow for requirement refinement, planning, authorization, execution, and validation. | Making project changes or handling complex, ambiguous, multi-step, or high-impact tasks. |
 
 ## Install
 
@@ -113,6 +113,14 @@ Use $novel-workbench to plan and write a Chinese novel from the initial intervie
 
 ```text
 Use $reliable-task-execution to align this change, obtain execution authorization, and verify the result.
+```
+
+```text
+Use $reliable-task-execution to brainstorm this rough feature idea and turn it into an actionable design.
+```
+
+```text
+Use $reliable-task-execution to grill this architecture proposal, expose weak assumptions, and then red-team the resulting plan.
 ```
 
 ## Notes
