@@ -76,7 +76,7 @@ If extra UI semantics are genuinely needed, such as tone, icon, permission, disa
 | Option shape | Use the project's existing option shape. If none exists, use `code` or `value` for stable values and `label` for display text. |
 | No extra mapping methods | Do not create unnecessary helper methods solely to map between stable values and labels; use direct maps or plain options. |
 | Coverage | Prefer exhaustive maps in typed projects. Use schema or tests in untyped projects when missing labels would be risky. |
-| Unknown values | Centralize fallbacks at display/format boundaries. Do not sprinkle ad-hoc fallbacks everywhere. |
+| Unknown values | For closed typed value sets, use exhaustive maps and let missing coverage fail type checking or tests; do not add an `Unknown` fallback. Add unknown-value presentation only when the contract explicitly permits unknown or forward-compatible values, and handle it at one declared boundary. |
 | Extra metadata | Add extra maps only for real needs such as i18n, permissions, dynamic copy, icons, tones, or analytics. |
 
 ## 3. Placement
@@ -107,6 +107,8 @@ If extra UI semantics are genuinely needed, such as tone, icon, permission, disa
   - `{ value, text, name, code, label }` when one stable value field plus `label` is enough
 - Overly wide untyped maps:
   - `Record<number, string>` when a stable value type exists
+- Fallback labels for closed typed values:
+  - `STATUS_LABEL[status] ?? 'Unknown'` when `status` is a closed union or enum
 
 ## 6. Checklist
 
@@ -117,3 +119,4 @@ If extra UI semantics are genuinely needed, such as tone, icon, permission, disa
 - [ ] UI does not inline raw codes or scattered localized strings.
 - [ ] Logic does not rely on magic numbers or magic strings.
 - [ ] Placement matches feature-local vs shared promotion rules.
+- [ ] Closed typed value sets are exhaustive and do not hide missing coverage behind an unknown fallback.

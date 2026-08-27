@@ -42,6 +42,15 @@ Use this skill when:
 | Shared UI, shared state logic, shared utilities, cross-feature reuse | Start local, then promote only when reuse is real and boundaries stay clean. |
 | Code review, standards, architecture, maintainability | Check module layout, API usage, state/data, mappings, UI library usage, performance, and reporting. |
 
+## Trust typed contracts; validate boundaries once
+
+- Treat required values with an established static type as trusted inside the typed application domain and use them directly.
+- Use optional chaining only for the exact receiver declared optional or nullable. Each `?.` must correspond to optionality in the contract; access required nested fields directly.
+- Remember that an optional call or access makes the whole expression optional. Use forms such as `obj.arr?.map(...)` only when both the optional collection and an `undefined` result are intentional.
+- Do not add guards, fallback values, defensive optional chaining, repeated normalization, or runtime validators to hide contract mismatches. Contract errors should fail fast.
+- Perform runtime validation only at an explicitly identified untrusted boundary, and validate once as data enters the trusted domain. Downstream code consumes the resulting concrete type without revalidation.
+- Do not introduce runtime schemas or validators merely because the project uses static types. They require an actual untrusted boundary or an explicit project requirement.
+
 ## Rule Categories by Priority
 
 | Priority | Category | Impact | Related File |

@@ -39,7 +39,7 @@
 | Transport success | Define transport success using the project's request library or HTTP status convention. Non-success responses must be handled or propagated intentionally. |
 | Business success | If the backend has business status fields such as `code`, `success`, or `message`, parse them at the API/service boundary or call site according to existing project convention. |
 | User-visible failure | Show user-visible errors at the workflow/call site using product copy and the project notification pattern. Avoid low-level API wrappers whose only role is to show generic failure messages. |
-| Types and schemas | Type or validate request params, response payloads, and adapted frontend models when the project supports TypeScript, schemas, generated clients, or runtime validators. |
+| Types and schemas | Use the project's established contract mechanism. Do not combine static typing and repeated runtime validation by default. When runtime validation is explicitly required for an untrusted API boundary, perform it once in the API client, adapter, or generated-client boundary and return a concrete trusted type downstream. |
 | Data adaptation | Keep DTO-to-view-model conversion out of render-heavy components unless the transformation is trivial and local. |
 | Comments | Add comments or JSDoc when the endpoint, business meaning, or transformation is not obvious, using the project's normal documentation language. |
 | Errors | Handle or propagate errors intentionally; no empty `catch`. |
@@ -60,7 +60,8 @@
 - [ ] Auth failure behavior follows the project's login/permission convention.
 - [ ] Transport success and business success are both handled according to the project contract.
 - [ ] User-visible failures use product copy and the project notification pattern at the workflow/call site.
-- [ ] Request params, response payloads, and adapted frontend models are typed or validated where the project supports it.
+- [ ] Request params, response payloads, and adapted frontend models use one clearly owned contract mechanism; any required runtime validation occurs once at the designated boundary.
+- [ ] Pages, components, hooks/composables, and stores do not revalidate data already returned as a trusted type by the API/service boundary.
 - [ ] DTO-to-view-model conversion has a clear owner.
 - [ ] Unknown endpoints or fields are marked as mock/TODO rather than guessed.
 - [ ] Errors are handled or propagated intentionally; no empty `catch`.

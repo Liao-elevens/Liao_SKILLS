@@ -1,7 +1,7 @@
 interface:
   display_name: "Reliable Task Execution"
   short_description: "Refine, authorize, execute, and verify reliably"
-  default_prompt: "Use $reliable-task-execution to refine material uncertainty, choose the minimum sufficient workflow, confirm authorization, and verify the result."
+  default_prompt: "Use $reliable-task-execution to start with the lightest sufficient workflow, recommend Full Brainstorm or Strict Grill when warranted, confirm authorization, and verify the result."
 
 policy:
   allow_implicit_invocation: true

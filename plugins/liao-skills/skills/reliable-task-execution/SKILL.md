@@ -60,15 +60,70 @@ Identify missing information, ambiguity, and the most fragile assumption. Ask th
 
 ## Refine requirements and design
 
-Inspect available project context before questioning the user. Resolve discoverable facts through safe read-only inspection, then select one refinement mode. Do not run every mode in sequence by default.
+Inspect available project context before questioning the user. Resolve discoverable facts through safe read-only inspection, then choose the lightest sufficient mode. Do not require the user to know mode names or present a mode menu by default.
 
 | Mode | Use when | Interaction |
 | --- | --- | --- |
 | Targeted clarification | One to three material gaps block an otherwise clear task | Ask only the blocking questions, include a recommendation when useful, then continue |
-| Brainstorm | The goal is rough, behavior or boundaries are undecided, or several approaches are credible | Explore one decision area at a time, compare alternatives, and shape a coherent design with the user |
-| Grill | The user explicitly asks to be challenged, a consequential decision rests on weak assumptions, or brainstorming leaves a critical uncertainty unresolved | Challenge one material assumption or tradeoff per turn and follow the answer until the decision is explicit |
+| Guided Design | The goal is rough or several approaches are credible, but a formal design package is unnecessary | Explore material decisions, compare alternatives, and shape an implementation-ready design |
+| Full Brainstorm | Multiple subsystems or design domains interact, or the work needs formal review, handoff, or visual design artifacts | Run a complete design cycle with staged approval and conditional artifacts |
+| Strict Grill | An existing consequential proposal has unresolved critical branches or weak assumptions | Build a decision tree and close one critical node per turn before finalizing the design |
 
 Skip refinement when the request, project conventions, and acceptance criteria already make the implementation path clear.
+
+### Escalate progressively
+
+- Start with targeted clarification or Guided Design unless the user explicitly requests a deeper mode.
+- Recommend only one next mode at a time. State why it fits, what additional outputs or interaction it adds, and whether any file or external write would still need authorization.
+- Wait for the user's answer before entering Full Brainstorm or Strict Grill. Do not silently impose a long workflow.
+- If the user declines, continue with the lighter mode, record the accepted limitation or risk, and do not repeat the recommendation unless the scope materially changes.
+- Honor explicit user overrides such as "keep it quick," "full brainstorm," or "strictly grill this" without asking them to choose again.
+- Do not automatically chain Full Brainstorm into Strict Grill. Recommend Strict Grill afterward only if major decision branches remain unresolved.
+
+#### Decide whether to recommend Full Brainstorm
+
+Recommend Full Brainstorm when at least one strong signal or at least two supporting signals are present.
+
+Strong signals:
+
+- The work spans three or more interacting subsystems with distinct responsibilities, data, or interface boundaries. Do not count ordinary components within one page as separate subsystems.
+- The user is designing a broad product, platform, or business domain from scratch and its boundaries are not established.
+- Architecture, data modeling, and user flow must be designed together.
+- The outcome requires a formal design specification for team review or cross-role handoff.
+- The work explicitly needs several design artifacts such as architecture, entity-relationship, state, and interaction diagrams.
+- The scope must first be decomposed into multiple independently deliverable projects or phases.
+
+Supporting signals:
+
+- At least three design domains among product, interaction, architecture, data, interfaces, security, operations, testing, and rollout contain material unknowns.
+- Two or more credible approaches would produce materially different architecture, data, or user experience.
+- Permissions, state transitions, failure recovery, or data consistency cross module boundaries.
+- Acceptance criteria cannot be made concrete without resolving several material decisions.
+- The work requires migration, staged rollout, backward compatibility, or coexistence with a legacy path.
+- Multiple user or consumer groups have materially different goals.
+- One local decision affects three or more downstream modules or consumers.
+
+#### Decide whether to recommend Strict Grill
+
+Recommend Strict Grill only when all three conditions are true: a concrete proposal exists, at least one high-impact signal is present, and at least one critical decision branch is unresolved.
+
+A concrete proposal names an intended approach, not merely a goal. Examples include splitting a monolith, adopting a shared database, changing an authentication model, or migrating frameworks.
+
+High-impact signals:
+
+- The decision is costly or difficult to reverse.
+- It changes a public API, shared schema, protocol, common component, or security boundary.
+- It involves production data migration, deletion, or format conversion.
+- It affects authentication, authorization, privacy, payments, or other sensitive behavior.
+- It affects multiple systems, teams, or existing consumers.
+- Failure could cause material downtime, incorrect data, or serious user harm.
+- It creates significant vendor lock-in or long-term infrastructure cost.
+- It requires broad migration, dual-write, staged rollout, or legacy compatibility.
+- It relies on unverified performance, capacity, availability, or reliability assumptions.
+
+A critical branch is unresolved when a different answer could materially change scope, architecture, data consistency, public interfaces, security, failure behavior, migration, cost, sequencing, or acceptance criteria, and the branch has no explicit disposition.
+
+Treat a critical branch as explicitly disposed only when it is confirmed, accepted as an assumption with its risk, explicitly deferred with its impact, evidence-blocked with a named validation path, or declared out of scope. Do not treat vague statements such as "later" or "probably fine" as closure.
 
 ### Clarify targeted gaps
 
@@ -77,30 +132,46 @@ Skip refinement when the request, project conventions, and acceptance criteria a
 - Give a recommended default and its main consequence when that helps the user decide.
 - Continue immediately after the blocking gaps are resolved; do not reconfirm settled choices.
 
-### Brainstorm a design
+### Guide a design
 
 1. Establish the objective, affected users or consumers, current context, and constraints.
-2. Explore one decision area at a time. Prefer a focused question over a large questionnaire.
+2. Explore one material decision area at a time. Prefer a focused question over a large questionnaire.
 3. Present two or three materially different approaches when credible alternatives exist. Lead with the recommendation and explain the decisive tradeoff.
 4. Develop the design in readable sections and seek confirmation only at points that would change downstream work.
 5. Cover relevant boundaries, data or interaction flow, failure behavior, acceptance criteria, and exclusions.
-6. Summarize the resulting design and any remaining assumptions. Treat design approval as alignment, not implementation authorization.
+6. Summarize the resulting design and remaining assumptions. Treat design approval as alignment, not implementation authorization.
 
-### Grill consequential decisions
+### Run a Full Brainstorm
 
-- Ask one question per turn and target the highest-impact unresolved decision, weakest assumption, missing evidence, or avoided tradeoff.
-- Build on the user's answer when it exposes another material assumption; do not follow a generic checklist.
-- Make the consequence concrete, such as the affected interface, failure mode, cost, or user experience.
-- After roughly three to five material questions, summarize resolved decisions and remaining uncertainty so the user can continue, stop, or accept an assumption.
-- Stop when further questions would not change the design, when the user asks to stop, or when the remaining uncertainty is explicitly accepted.
+1. Inspect the current project, related documentation, and established patterns before detailed questioning.
+2. Assess scope first. If independent subsystems make one design too broad, propose a decomposition and brainstorm one coherent unit at a time.
+3. Ask one question per turn to establish purpose, users, constraints, success criteria, and cross-domain decisions.
+4. Present two or three approaches with tradeoffs and a recommendation. Remove unnecessary scope.
+5. Present the design in sections sized to their complexity and obtain confirmation after each section.
+6. Cover relevant architecture, component boundaries, user and data flow, state and data model, interfaces, failure handling, security, performance, operations, testing, acceptance criteria, migration, and rollback.
+7. Produce only decision-relevant artifacts. Use Mermaid for flows, architecture, state, or entity relationships when it materially improves understanding.
+8. When a visual question would genuinely benefit from mockups or side-by-side visual comparison and a visual capability is available, offer it just in time and wait for consent. If unavailable, use Mermaid or a static description and state the limitation.
+9. Self-review the completed design for placeholders, contradictions, ambiguous requirements, missing failure cases, and excessive scope; fix issues before presenting the final draft.
+10. Ask for separate authorization before writing a design document, committing it, or moving into implementation planning. A brainstorming request is read-only by default.
 
-Finish refinement when the objective, scope, constraints, recommended approach, major tradeoffs, acceptance criteria, and material assumptions are sufficiently clear for the next stage. Do not seek certainty that is unnecessary for the task's risk.
+### Run a Strict Grill
+
+1. Restate the proposal and build a structured decision tree covering relevant goals, users, scope, constraints, architecture, data and state, interfaces, failure behavior, security, performance, migration, operations, testing, and acceptance criteria.
+2. Mark each node as unresolved, confirmed, accepted assumption, explicitly deferred, or evidence-blocked.
+3. Ask exactly one question per turn, targeting the highest-impact unresolved node.
+4. Explain the concrete consequence and tradeoff without silently deciding for the user.
+5. Follow new critical branches exposed by the answer before moving to unrelated nodes.
+6. Every three to five questions, show decision-tree progress. Treat this as a checkpoint, not an exit condition.
+7. Do not finalize the design while critical nodes remain unresolved unless the user explicitly accepts, defers, or stops the session.
+8. Finish with the closed decision tree, decision snapshot, final design, accepted assumptions, deferred items, and acceptance criteria.
+
+Finish refinement when the objective, scope, constraints, recommended approach, major tradeoffs, acceptance criteria, and material assumptions are sufficiently clear for the selected mode. Do not seek certainty that is unnecessary for the task's risk.
 
 ## Select a workflow
 
 ### Red-team a plan
 
-Use after a plan or design exists when it involves consequential architecture choices, expensive commitments, or a broad failure surface. Brainstorming forms a design, grilling resolves decisions, and red-teaming evaluates the resulting proposal; combine them only when each adds distinct value.
+Use after a plan or design exists when it involves consequential architecture choices, expensive commitments, or a broad failure surface. Guided Design and Full Brainstorm form a design, Strict Grill closes its decision branches, and red-teaming evaluates the resulting proposal; combine them only when each adds distinct value.
 
 1. Restate the objective and constraints concisely.
 2. Assume the plan failed and identify the three most plausible causes.

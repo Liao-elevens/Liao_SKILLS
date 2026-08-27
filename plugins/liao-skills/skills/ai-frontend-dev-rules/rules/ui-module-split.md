@@ -29,8 +29,8 @@ If `ai-frontend-dev-rules` is available and the task touches a non-trivial page,
 | Feature entry | Route/view/screen shell, high-level composition, and wiring child modules together. Avoid long inline data arrays, request logic, or complex UI blocks. |
 | UI block modules | Presentational or semi-controlled sections such as toolbars, tables, cards, panels, modals, and form sections. |
 | State/data logic | Feature-specific state, effects/subscriptions, pagination, request orchestration, cache wiring, and derived data. |
-| Types/models/schemas | Feature-owned interfaces, DTOs, schemas, prop contracts, view models, and domain models. |
-| Utilities | Pure functions, formatters, parsers, validators, option builders, and static config factories. |
+| Types/models/schemas | Feature-owned interfaces, DTOs, prop contracts, view models, and domain models. Runtime schemas belong here only when the feature owns an explicitly untrusted boundary or the project requires them. |
+| Utilities | Pure functions, formatters, boundary parsers when required, option builders, and static config factories. Do not create validator utilities for already typed internal values. |
 | Styles/assets | Co-located styles and assets when they are specific to the feature or UI block. |
 
 ### 0.3 Decide ownership before editing
@@ -61,7 +61,8 @@ For every new non-trivial feature, create a structure that matches the project's
         styles-file        # optional; match project convention
     state/ or hooks/ or composables/ or services/
     utils/                 # or one module-level utility file for related helpers
-    types/ or models/ or schemas/
+    types/ or models/
+    schemas/               # only when runtime schemas are already used or explicitly required
 ```
 
 Use the names already common in the project. For example, React projects may use `components` and hooks, Vue projects may use `components` and composables, Angular projects may use components/services/models, and Svelte projects may use components/stores/modules. Do not introduce a new naming system for one feature alone.
@@ -72,7 +73,7 @@ Follow the existing styling strategy in nearby code: CSS Modules, scoped styles,
 
 ### Utility file granularity
 
-Prefer one utility file per feature or functional module for small, related pure helpers. For example, `utils.ts`, `utils/index.ts`, or an existing project-specific equivalent such as `utils/view-model.ts` can hold related formatters, parsers, validators, option builders, and view-model helpers for that module.
+Prefer one utility file per feature or functional module for small, related pure helpers. For example, `utils.ts`, `utils/index.ts`, or an existing project-specific equivalent such as `utils/view-model.ts` can hold related formatters, required boundary parsers, option builders, and view-model helpers for that module. Do not create validator utilities unless the feature owns an explicitly untrusted runtime boundary or the project requires runtime schemas.
 
 Do not create many tiny utility files such as `format-time.ts`, `build-options.ts`, and `parse-status.ts` when they are only used by the same feature module and are easier to scan together. Split a utility folder by domain only when the helpers are numerous, independently reusable, tested separately, or owned by clearly different subdomains.
 
