@@ -58,6 +58,40 @@ Use one primary class and combine workflows only when necessary:
 
 Identify missing information, ambiguity, and the most fragile assumption. Ask the user only when the answer cannot be discovered safely and a reasonable assumption could materially change the result. Report decision-relevant reasoning, evidence, assumptions, and intermediate conclusions; do not expose private chain-of-thought.
 
+## Maintain implementation conformance
+
+Use this checkpoint when implementing an approved plan, a phased change, or work with explicit scope and acceptance gates. Keep it lightweight for small local tasks.
+
+Before editing, retain a compact conformance snapshot:
+
+- the current phase and its single objective;
+- allowed scope and explicit exclusions;
+- existing sources of truth, exports, modules, or APIs that must be reused;
+- confirmed decisions and accepted assumptions;
+- the validation required to pass the phase.
+
+Inspect the real code path, data ownership, and build boundaries before translating plan language into code. A conceptual item in a plan does not by itself justify a new API, state, switch, helper, abstraction layer, or duplicate configuration. Reuse the established source of truth unless the approved plan explicitly replaces it.
+
+During each phase:
+
+1. Implement only what the current objective requires. Do not pull later phases forward for convenience.
+2. Stop and realign before adding an unapproved public interface, state, switch, abstraction layer, duplicate data source, or behavior change that materially expands the phase.
+3. At the phase checkpoint, compare the actual diff with the conformance snapshot. Look for out-of-scope changes, repeated values, unnecessary functions, altered historical behavior, and work belonging to another phase.
+4. Run the phase's required validation, including the real user journey when behavior or performance is judged through that journey. A successful build, typecheck, or isolated page check is not equivalent to phase acceptance.
+5. Do not advance past a plan-defined or user-required approval gate until it passes. If the gate fails, correct the implementation, revert the unsupported part, or report the blocker instead of presenting the phase as complete.
+
+For substantial phased work, track the checkpoint in this minimal form:
+
+```text
+Phase / objective:
+In scope / excluded:
+Sources of truth to reuse:
+Acceptance gate:
+Status: implemented | validated | blocked
+```
+
+In the final handoff, distinguish what was implemented, what was validated, and what remains unverified.
+
 ## Refine requirements and design
 
 Inspect available project context before questioning the user. Resolve discoverable facts through safe read-only inspection, then choose the lightest sufficient mode. Do not require the user to know mode names or present a mode menu by default.
