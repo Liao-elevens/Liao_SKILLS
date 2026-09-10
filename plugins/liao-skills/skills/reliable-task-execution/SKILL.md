@@ -1,27 +1,37 @@
 ---
 name: reliable-task-execution
-description: Improve reliability when planning or executing tasks that may produce code, file, configuration, data, or external-system changes, and for complex, ambiguous, multi-step, or high-impact work. Use when Codex needs to confirm execution authorization, refine ambiguous requirements, brainstorm alternatives, critically interview the user about consequential decisions, match planning and validation depth to risk, assess code-change impact, coordinate independent workstreams, red-team a proposal, or test a real user journey. Apply the smallest sufficient workflow; do not use for simple read-only questions.
+description: Improve reliability when planning or executing project changes or handling complex, ambiguous, multi-step, or high-impact work. Use to check explicit execution authorization, refine requirements, assess change impact, plan, review proposals, and validate results. Stay read-only unless the user explicitly instructs changes; invoking this skill or classifying a task as simple never authorizes edits. Apply the smallest sufficient workflow; simple read-only questions need only the authorization boundary, not the full workflow.
 ---
 
 # Reliable Task Execution
 
-Choose the smallest workflow that makes the result dependable. Do not turn a simple request into a ceremony.
+First establish whether the user explicitly authorized changes, then choose the smallest workflow that makes the result dependable. Task simplicity can reduce planning and validation, never the authorization requirement.
 
 Match the user's language unless they request otherwise.
 
 When the user asks how to use this skill, read [the complete usage guide](references/usage/使用说明.md).
 
-## Apply the execution gate
+## Apply the execution gate before task classification
 
-Distinguish discussion from authorization:
+**Default to read-only. Do not modify code or other files without an explicit user instruction to make the relevant change.** Loading this skill, finding a bug, knowing the solution, or judging a fix trivial does not grant authorization. This gate applies to every workflow below, including Quick tasks and L1 changes.
 
-- Treat requests to analyze, diagnose, review, explain, research, or propose a plan as read-only.
-- When the user describes a goal or idea without clearly asking to implement it, inspect only what is needed, align the plan, and ask whether to begin.
-- Before asking, resolve discoverable facts through safe read-only inspection. Confirm only choices that materially affect scope or outcome.
-- Treat phrases such as "开始做", "实现", "开发", "修改", "修复", or an equally clear instruction as execution authorization.
-- Do not ask again when authorization is already explicit.
-- Ask again before expanding scope or taking a newly introduced high-risk, destructive, sensitive, privileged, external-write, deployment, publication, or Git-history action.
-- While waiting for authorization, do not modify code, files, configuration, data, or external systems.
+### Recognize explicit authorization
+
+Before the first write, identify the user's actual instruction, the requested action, and its target and scope. If any of these cannot be established from the conversation, remain read-only and clarify only what is missing. Do not invent authorization from the likely desired outcome.
+
+- An instruction to perform a concrete change authorizes that change: "请修改这个校验规则", "修复这个报错", or "按刚才的方案开始实现". Interpret the full sentence and context, not isolated words such as "修改", "修复", "实现", or "优化".
+- A polite request can still be explicit: "能帮我把这个超时改为 30 秒吗？" directs an edit. A feasibility or advice question such as "这个超时是否应该修改？" or "这个报错怎么修复？" authorizes analysis only.
+- Requests to inspect, analyze, diagnose, review, explain, research, test, suggest, or plan do not authorize code changes. Bug reports, pasted errors, complaints, desired outcomes, and "帮我看看" are not by themselves instructions to fix anything. No explicit "不要改代码" disclaimer is required.
+- Agreement with a finding or design is not an instruction to implement it. "可以", "好的", or "继续" counts as edit authorization only when it clearly answers a specific question about making the described changes, or continues an already authorized implementation. Continuing analysis or planning keeps that scope.
+- Existing explicit authorization remains valid for the same unfinished task and scope; do not ask before each edit, necessary correction, or validation step. It does not extend from a completed or unrelated task to a new issue. Honor a later explicit restriction such as "先别改，只分析" before further writes.
+- Authorization to edit a document, write a plan, run a test, or update this skill covers that action only; it does not automatically authorize changing application code. Invoking this skill alone never grants edit permission.
+
+### Stay within the authorized mode
+
+- Without edit authorization, inspect relevant context safely and return findings, recommendations, or a proposed patch in the conversation. Do not apply the patch, create plan files, make cleanup edits, or fix issues discovered during inspection.
+- Treat indirect writes as writes too: avoid formatters with write flags, lint autofix, snapshot updates, code generators, dependency or lockfile updates, and scripts that rewrite project files unless their changes are authorized. Choose checks without those side effects while working read-only.
+- Resolve discoverable facts before asking. For a read-only request, completing the explanation or review is a complete result; do not turn every answer into a request to start implementation. If implementation is the needed next step and authorization is missing, describe the concrete change and ask once whether to apply it. Wait for an explicit answer; silence is not approval.
+- After explicit authorization, complete the requested changes and proportional validation without repeated approval requests. Ask again before materially expanding scope or taking a newly introduced high-risk, destructive, sensitive, privileged, external-write, deployment, publication, or Git-history action.
 
 Before implementation, align these items when relevant:
 
@@ -30,7 +40,7 @@ Before implementation, align these items when relevant:
 - constraints and important tradeoffs;
 - unresolved decisions that would materially change the result.
 
-End a plan awaiting approval with a direct question asking whether to execute it.
+When proposing implementation that awaits authorization, end with a direct question naming the changes to apply. Approval of a plan's design alone does not open the execution gate.
 
 ### Control Git scope
 
@@ -47,14 +57,14 @@ Authorization to commit or push does not authorize choosing a different target b
 
 ## Classify the task
 
-Use one primary class and combine workflows only when necessary:
+Classify only after checking authorization. Classification controls workflow depth, not permission to write. Use one primary class and combine workflows only when necessary:
 
 | Class | Signal | Response |
 | --- | --- | --- |
-| Quick | Clear, local, stable, and low risk | Answer or execute directly when authorized |
-| Moderate | Several steps or limited uncertainty | State a short plan, then proceed when authorized |
+| Quick | Clear, local, stable, and low risk | Answer read-only; edit and validate only with explicit change authorization |
+| Moderate | Several steps or limited uncertainty | State a short plan; implement only with explicit change authorization |
 | Deep | Cross-module, costly, high-impact, or decision-heavy | Align scope, risks, and acceptance criteria first |
-| Experimental | The result cannot be established by reasoning alone | Define the smallest useful experiment and success criteria |
+| Experimental | The result cannot be established by reasoning alone | Define the smallest useful experiment and success criteria; obtain authorization for any required changes |
 
 Identify missing information, ambiguity, and the most fragile assumption. Ask the user only when the answer cannot be discovered safely and a reasonable assumption could materially change the result. Report decision-relevant reasoning, evidence, assumptions, and intermediate conclusions; do not expose private chain-of-thought.
 
@@ -103,7 +113,7 @@ Inspect available project context before questioning the user. Resolve discovera
 | Full Brainstorm | Multiple subsystems or design domains interact, or the work needs formal review, handoff, or visual design artifacts | Run a complete design cycle with staged approval and conditional artifacts |
 | Strict Grill | An existing consequential proposal has unresolved critical branches or weak assumptions | Build a decision tree and close one critical node per turn before finalizing the design |
 
-Skip refinement when the request, project conventions, and acceptance criteria already make the implementation path clear.
+Skip refinement when the request, project conventions, and acceptance criteria already make the implementation path clear. Skipping refinement does not skip the execution gate; a clear solution is not permission to implement it.
 
 ### Escalate progressively
 
@@ -221,7 +231,7 @@ Use before broad, shared, or uncertain code changes. Inspect the relevant struct
 
 | Risk | Signal | Default handling |
 | --- | --- | --- |
-| L1 | Local effect, stable interface, strong coverage | Implement after authorization and run focused checks |
+| L1 | Local effect, stable interface, strong coverage | Implement only with explicit change authorization and run focused checks |
 | L2 | Cross-module effect or broad regression surface | Use separable, independently verifiable change units |
 | L3 | Public interface, shared schema, common dependency, or production data | Present the plan and obtain specific approval first |
 
@@ -284,6 +294,6 @@ After requirement refinement, include a compact decision snapshot when it helps 
 - Distinguish confirmed facts, inferences, unverified assumptions, and observed results.
 - Never claim a check that was not run. Report unavailable or skipped checks, why they were not run, and the resulting risk.
 - Do not confuse partial progress with completion.
-- Continue through safe, authorized work until the acceptance criteria are met or a genuine blocker requires the user.
+- Continue through safe, explicitly authorized work until the acceptance criteria are met or a genuine blocker requires the user. For analysis or review, deliver the findings and stop; do not add an implementation phase to make the task seem complete.
 - Finish with the outcome, validation performed, anything unverified, the change scope, and risks or unresolved issues.
 - If no risks or unresolved issues remain, say so explicitly.
