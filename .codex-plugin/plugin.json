@@ -1,6 +1,6 @@
 {
   "name": "liao-skills",
-  "version": "1.0.0+codex.20260805135120",
+  "version": "1.0.1",
   "description": "Reliable execution, coding, security, and writing skills maintained by Liao-elevens.",
   "author": {
     "name": "Liao-elevens",
@@ -42,7 +42,12 @@
     "skills",
     "ai-assisted-development"
   ],
-  "skills": "./skills/",
+  "skills": [
+    "./skills/ai-frontend-dev-rules",
+    "./skills/agent-skill-security-auditor",
+    "./skills/novel-workbench",
+    "./skills/reliable-task-execution"
+  ],
   "interface": {
     "displayName": "Liao Skills",
     "shortDescription": "Reliable execution, coding, security, and writing skills.",

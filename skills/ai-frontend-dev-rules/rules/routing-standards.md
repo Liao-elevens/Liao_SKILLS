@@ -2,57 +2,26 @@
 
 ## About / 简介
 
-**EN:** Route, screen, and navigation organization rules so frontend expansion stays predictable across frameworks.
+**EN:** Preserve native routing boundaries, navigation behavior, and intentional URL state.
 
-**中文：** 约定路由、屏幕和导航组织方式，让任意前端技术栈下的页面扩展都保持稳定、可维护。
+**中文：** 遵循项目路由机制，保留导航语义、路由边界与有明确用途的 URL 状态。
 
-## How to use
+## Structure and navigation
 
-Add routes, screens, tabs, menus, or navigation entries through the project's established routing/navigation mechanism. Keep route definitions, lazy loading, permissions, layouts, and fallbacks consistent with nearby code.
+Register routes/screens through the project's central config, feature route file, file-based routing, or platform manifest. Preserve layout nesting, lazy loading, loading/error boundaries, and not-found handling. Do not impose a central route registry on a framework whose routes are intentionally file-owned.
 
----
+Use readable stable paths and the project navigation/link API for internal navigation. Preserve link semantics such as keyboard access and opening a new tab. Raw location changes are appropriate for intentional full-page or external navigation, not a substitute for the existing router.
 
-## 1. Route structure
+If several conditions choose a destination, compute the target clearly, then navigate once where this preserves behavior. Keep guard/redirect ownership at the appropriate shared route or layout boundary.
 
-- Prefer one clear source of truth for route, screen, or navigation configuration when the project supports it.
-- Keep layout routes, nested screens, tabs, and parent-child relationships explicit.
-- Preserve fallback routes, 404 pages, empty states, or platform-equivalent "not found" behavior.
-- Avoid scattering route definitions across feature files unless the framework or project convention intentionally supports feature-owned routing.
+## URL state
 
-## 2. Lazy loading pattern
+Use path parameters for resource identity where the router expects them. Put filters, pagination, tabs, or sorting in query/search state when sharing, bookmarking, restoration, or browser-history behavior is required. Transient popovers and temporary input do not automatically belong in the URL.
 
-- Use page/screen/route-level lazy loading when the project already uses it or when the framework makes it standard.
-- Keep loading fallbacks consistent with existing UX.
-- Preserve existing error boundaries, error pages, guard wrappers, or framework-equivalent failure handling.
-- Do not introduce a new lazy-loading pattern for one route when the project already has one.
+Choose a clear source of truth. Avoid independent URL and local state with watchers/effects continuously copying in both directions. An editable local draft before applying search is a valid separate lifecycle. Parse untrusted URL values at the route boundary using [type rules](type-standards.md); preserve defaults and back/forward navigation behavior.
 
-## 3. Path and naming
+## Permissions and verification
 
-| Rule | Detail |
-|------|--------|
-| Path style | Use readable, stable route paths or screen identifiers that match feature intent and project naming. |
-| Route file | Place route registration where the project expects it: central config, module route file, file-based route folder, or framework manifest. |
-| Nested routes | Model child routes/screens under their parent instead of duplicating parent state in separate definitions. |
-| Params/query | Use params for identity and query/search state for filters, tabs, sorting, pagination, or view options. |
+Centralize common guard logic without deleting resource-specific authorization or distinct permissions. Preserve the distinction between unauthenticated, unauthorized, and not found. Client-side hiding or routing is not a substitute for required server authorization.
 
-## 4. Navigation rules
-
-- Use the framework or project navigation API for internal navigation. Avoid raw location changes unless the project convention requires them.
-- Cross-page entry buttons should navigate to explicit route targets with required params/query/search state.
-- If navigation depends on business state, compute the target first and navigate once.
-- Keep permission checks, route guards, and redirect behavior centralized where possible.
-
-## 5. Guard and permission
-
-- Use route-level guards, layout checks, middleware, loaders, navigation guards, or platform equivalents when auth/permission affects multiple screens.
-- Do not duplicate permission checks in every leaf page if a parent route or shared guard can centralize them.
-- Keep unauthorized, unauthenticated, not-found, and no-access states visually and semantically distinct.
-
-## 6. Checklist
-
-- [ ] New route/screen/navigation entry is registered in the project's expected place.
-- [ ] Lazy loading, fallback, and error handling match existing patterns.
-- [ ] 404/not-found behavior is preserved.
-- [ ] Internal navigation uses project/framework APIs.
-- [ ] Params/query/search semantics are clear.
-- [ ] Guards and permissions are centralized where appropriate.
+Check direct navigation, required parameters, back/forward behavior, lazy loading, failures, and redirects affected by the change. Do not alter unrelated route definitions merely for consistency.

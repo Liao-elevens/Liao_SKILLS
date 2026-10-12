@@ -1,127 +1,61 @@
 ---
 name: ai-frontend-dev-rules
-description: Technology-neutral frontend architecture rules for AI-assisted development. Use this skill when creating, extending, refactoring, or reviewing frontend features in any stack. Covers UI module split, shared modules, routing, type/schema boundaries, API/service integration, state/data strategy, code/value-label mapping, UI library usage, frontend performance, and change reporting. Always read rules/ui-module-split.md for non-trivial page or feature work, then report applied rules with change-reporting.md after substantial or final code changes.
+description: Framework-neutral frontend implementation and architecture rules for creating, extending, refactoring, or reviewing frontend features. Guides readable naming, control flow, functions, helper grouping, module boundaries, types, state, API integration, routing, UI libraries, and performance in the project's existing stack.
 ---
 
 # AI frontend dev rules
 
 ## About / 简介
 
-**EN:** This skill provides technology-neutral frontend engineering rules that can be reused in any frontend project and adapted to the project's existing stack, framework, file layout, design system, and tooling.
+**EN:** Write concise, readable frontend code with clear ownership and enough structure for the actual feature. Adapt to the project's framework, version, layout, and tooling.
 
-**中文：** 本技能提供与技术栈无关的前端工程规范，可复用于任意前端项目，并按项目已有技术栈、框架、文件结构、设计系统和工具链适配。
+**中文：** 让前端代码简洁、易读、易维护，按实际职责组织模块，避免冗长实现和过度拆分，并适配项目已有框架、版本、目录与工具链。
 
-## Binding in a project
+## Scope and rule strength
 
-Skill descriptions alone are not guaranteed to load for every model or session. If a project needs these rules to apply consistently, bind this skill through that project's agent rules, repository instructions, or equivalent workspace mechanism.
+Apply to frontend implementation, refactoring, and review in Vue, React, Angular, Svelte, plain JavaScript/TypeScript, or another frontend stack. Identify the actual framework and version first. Preserve its idioms, including Vue Options API or Composition API; this skill does not require a framework, API-style, or state-library migration.
 
-## Agent: module split is part of this skill
+- **Hard constraints:** preserve required behavior, contracts, error handling, accessibility, and runtime boundaries. Do not prefix function calls with unary `void`; see [async calls](rules/state-and-data.md#async-calls-and-error-ownership).
+- **Defaults:** prefer direct expressions, short clear names, local ownership, and grouped helpers. Depart when a concrete contract, framework constraint, or simpler reading path justifies it.
+- **Review triggers:** size, name length, repeated branches, and repeated code prompt inspection. They are not quotas or automatic extraction rules.
 
-Whenever you implement or refactor a non-trivial frontend page, view, route, screen, or feature module, follow `rules/ui-module-split.md`. Keep the entry file thin, move meaningful UI blocks, state/data logic, types/models, and pure helpers into the project-appropriate module locations. Do not default to a single large entry file unless the feature is trivially small.
+Explicit user instructions and applicable project rules take precedence over these defaults. Surface a material conflict instead of silently changing behavior. Apply rules to the relevant change; do not expand a small fix into a repository-wide cleanup. Fewer lines, files, or conditional operators alone do not establish better code.
 
-## When to Apply
+## Essential decisions
 
-Use this skill when:
-- Scaffolding or extending frontend feature modules, pages, routes, screens, views, widgets, forms, tables, or dashboards.
-- Refactoring code that mixes layout, interaction logic, request handling, display mapping, and types/models in one file.
-- Defining project-wide shared components, composables/hooks/services, utilities, stores, models, or design-system wrappers.
-- Adding routes, screens, navigation entries, guards, permissions, or lazy-loaded feature boundaries.
-- Writing typed or schema-backed frontend code and keeping data contracts close to the modules that own them.
-- Choosing state scope: local, feature-level, shared, global, or server-cache state.
-- Implementing or using a dedicated API/service layer while following the current project's conventions.
-- Using a UI library or design system with version-correct, non-deprecated APIs.
-- Reviewing frontend performance, bundle impact, render/update overhead, data fetching, or loading behavior.
-- Reporting code changes that were guided by rules in this skill.
+1. Read [code readability](rules/code-readability.md) for implementation or review. Keep the shortest name and expression that still communicate intent and required distinctions.
+2. Select `if`, `switch`, maps, or collection operations by the decision's meaning; do not mechanically eliminate branches. Read [control flow and data transformations](rules/control-flow-and-data-transformations.md) when changing them.
+3. Extracting a function, a file, and a folder are separate decisions. Keep small private helpers local; group module-shared helpers. Read [module layout](rules/ui-module-split.md) for non-trivial feature work or placement changes.
+4. Trust established internal contracts without redundant guards, while preserving genuine optional values and untrusted-boundary checks. Read [types and contracts](rules/type-standards.md) when changing data contracts or defensive code.
+5. Derive state using the current framework's idioms. Preserve async sequencing and explicit error ownership. Read [state and data](rules/state-and-data.md) when changing state, lifecycle work, or calls returning promises.
 
-### Recognition cues
+## Read only the relevant rules
 
-| User intent (examples) | Agent should |
-|------------------------|--------------|
-| New page, route, screen, list, form, dashboard, or widget | Apply `rules/ui-module-split.md`, then routing/state/type rules as needed. |
-| "Split modules", "componentize", "too large", "messy structure" | Keep the entry thin and split by UI block, state/data logic, types/models, and utilities. |
-| Shared UI, shared state logic, shared utilities, cross-feature reuse | Start local, then promote only when reuse is real and boundaries stay clean. |
-| Code review, standards, architecture, maintainability | Check module layout, API usage, state/data, mappings, UI library usage, performance, and reporting. |
+| Task | Reference |
+| --- | --- |
+| Names, variable scope, comments, readable expressions | [Code readability](rules/code-readability.md) |
+| Branches, maps, defaults, collection transformations | [Control flow and data transformations](rules/control-flow-and-data-transformations.md) |
+| Function extraction, parameters, wrappers, abstraction | [Functions and abstraction](rules/functions-and-abstraction.md) |
+| Feature layout, helper files, `utils`/`util`, components and styles | [UI module and folder split](rules/ui-module-split.md) |
+| Reuse across features, shared exports and dependency direction | [Project shared modules](rules/project-shared-modules.md) |
+| Types, optionality, validation, DTOs and models | [Type standards](rules/type-standards.md) |
+| Derived state, framework lifecycle, async calls and errors | [State and data](rules/state-and-data.md) |
+| Requests, transport, API adaptation and configuration | [Backend API integration](rules/backend-api-integration.md) |
+| Stable values, labels, options and display metadata | [Utils data mapping](rules/utils-data-mapping.md) |
+| Routes, URL state, guards and lazy boundaries | [Routing standards](rules/routing-standards.md) |
+| Library versions, templates, component APIs and accessibility | [UI library usage](rules/ui-library-usage.md) |
+| Rendering, fetching, bundles and justified optimization | [Frontend performance](rules/frontend-performance.md) |
+| Reporting completed changes and verification | [Change reporting](change-reporting.md) |
 
-## Trust typed contracts; validate boundaries once
+For paired examples and cases that should stay unchanged, read the relevant section of [code quality examples](references/code-quality-examples.md). For rationale and framework-specific documentation, use [code quality sources](references/code-quality-sources.md); books inform the rules but are not mandatory reading for every task.
 
-- Treat required values with an established static type as trusted inside the typed application domain and use them directly.
-- Use optional chaining only for the exact receiver declared optional or nullable. Each `?.` must correspond to optionality in the contract; access required nested fields directly.
-- Remember that an optional call or access makes the whole expression optional. Use forms such as `obj.arr?.map(...)` only when both the optional collection and an `undefined` result are intentional.
-- Do not add guards, fallback values, defensive optional chaining, repeated normalization, or runtime validators to hide contract mismatches. Contract errors should fail fast.
-- Perform runtime validation only at an explicitly identified untrusted boundary, and validate once as data enters the trusted domain. Downstream code consumes the resulting concrete type without revalidation.
-- Do not introduce runtime schemas or validators merely because the project uses static types. They require an actual untrusted boundary or an explicit project requirement.
+## Working loop
 
-## Rule Categories by Priority
+1. Inspect nearby implementation, installed versions, contracts, and existing project conventions before choosing a structure.
+2. Identify the behavior to preserve and the smallest ownership boundary that fits the change. Select only relevant rule files.
+3. Implement directly; add a function, abstraction, type, state value, or file only when its responsibility earns the extra indirection.
+4. Review touched code for redundant names, branches, guards, wrappers, derived state, and fragmented helpers. Around 300 lines, review cohesion as described in the module rule; do not split solely to reach a number.
+5. Run proportional project checks and behavior cases. Verify defaults, ordering, mutation, errors, and framework behavior when refactoring changes their expression.
+6. Report the actual changes and verification using [change reporting](change-reporting.md). In a review-only task, report findings without editing unless asked to fix them.
 
-| Priority | Category | Impact | Related File |
-|----------|----------|--------|--------------|
-| 1 | UI Module Splitting | CRITICAL | `rules/ui-module-split.md` |
-| 2 | Code Sharing | HIGH | `rules/project-shared-modules.md` |
-| 3 | Routing | HIGH | `rules/routing-standards.md` |
-| 4 | Type / Schema Safety | HIGH | `rules/type-standards.md` |
-| 5 | API Layer | HIGH | `rules/backend-api-integration.md` |
-| 6 | State Management | HIGH | `rules/state-and-data.md` |
-| 7 | Utils Data Mapping | MEDIUM | `rules/utils-data-mapping.md` |
-| 8 | UI Library Usage | MEDIUM | `rules/ui-library-usage.md` |
-| 9 | Frontend Performance | MEDIUM | `rules/frontend-performance.md` |
-| 10 | Change Reporting | MEDIUM | `change-reporting.md` |
-
-## Quick Reference
-
-### 1. UI Module Splitting (CRITICAL)
-- `rules/ui-module-split.md` - Technology-neutral feature/module split, entry-file responsibilities, UI block placement, state/data logic placement, helper placement, and split heuristics.
-
-### 2. Code Sharing (HIGH)
-- `rules/project-shared-modules.md` - Shared UI modules, composables/hooks/services, utilities, state, and models.
-
-### 3. Routing (HIGH)
-- `rules/routing-standards.md` - Route/navigation organization, lazy loading, guards, fallback routes, and internal navigation.
-
-### 4. Type / Schema Safety (HIGH)
-- `rules/type-standards.md` - Type, schema, DTO, model, and boundary guidance for typed and untyped frontend projects.
-
-### 5. API Layer (HIGH)
-- `rules/backend-api-integration.md` - API/service layer boundaries, errors, naming, and environment rules.
-
-### 6. State Management (HIGH)
-- `rules/state-and-data.md` - Local vs feature vs shared/global vs server data, plus approval rules for new state/request libraries.
-
-### 7. Utils Data Mapping (MEDIUM)
-- `rules/utils-data-mapping.md` - Code/value to label mapping, project option shape, `code` or `value` plus `label`, naming, placement, and avoiding magic values.
-
-### 8. UI Library (MEDIUM)
-- `rules/ui-library-usage.md` - UI library and design-system usage: installed version, correct APIs/parameters, no deprecated APIs, styling, forms, and accessibility.
-
-### 9. Performance (MEDIUM)
-- `rules/frontend-performance.md` - General frontend performance checklist for data fetching, rendering, bundle size, loading, and verification.
-
-### 10. Change Reporting (MEDIUM)
-- `change-reporting.md` - Required final-delivery table for code changes guided by this skill.
-
-## How to Use
-
-Read individual rule files for detailed explanations and conventions:
-
-```text
-rules/ui-module-split.md
-rules/routing-standards.md
-rules/type-standards.md
-rules/state-and-data.md
-rules/ui-library-usage.md
-change-reporting.md
-...
-```
-
-## Agent Workflow
-
-1. Confirm the project's frontend stack, routing/navigation model, UI library/design system, source-root layout, state/data libraries, and existing conventions.
-2. For a new feature or non-trivial page/screen/view edit, open and follow `rules/ui-module-split.md` first, then `rules/routing-standards.md` and `rules/type-standards.md` as needed.
-3. For shared code promotion, use `rules/project-shared-modules.md` and keep dependencies flowing from feature code to shared code, not the reverse.
-4. After local edits, run the post-edit split check in `rules/ui-module-split.md` for touched frontend files, using line count as a review trigger rather than an automatic split rule, and paying special attention to files around 300+ lines or changes that add/expand UI blocks or renderers. Include style ownership in this check: UI-block-specific styles should be co-located with the owning block, while entry stylesheets should keep only shell layout, shared theme tokens, or cross-block utilities.
-5. After local edits, apply the post-change placement review in `rules/project-shared-modules.md` before finalizing functions, helpers, renderers, mappings, or adapters.
-6. For data and API work, use `rules/backend-api-integration.md` and `rules/state-and-data.md`.
-7. For UI libraries, use `rules/ui-library-usage.md` and match the installed version exactly.
-8. For performance, use `rules/frontend-performance.md` and the project's existing profiling/build tools.
-9. After substantial or final code changes guided by this skill, include the table required by `change-reporting.md` in the delivery note. For trivial follow-up edits, pure Q&A, or documentation-only review with no project code change, do not force the table unless the user asks for it.
-
-Only the `About / 简介` sections in rule files should be bilingual by default. Other rule content should be written in English unless a user explicitly asks for another language, a project-specific rule requires another language, or a required output format uses another language.
+Bind this skill through project agent instructions when consistent loading is required; its description alone cannot guarantee invocation. Keep only `About / 简介` sections bilingual by default; other skill content is English unless the user or project requires another language.

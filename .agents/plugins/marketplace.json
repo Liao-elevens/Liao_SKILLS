@@ -8,7 +8,7 @@
       "name": "liao-skills",
       "source": {
         "source": "local",
-        "path": "./plugins/liao-skills"
+        "path": "./"
       },
       "policy": {
         "installation": "AVAILABLE",

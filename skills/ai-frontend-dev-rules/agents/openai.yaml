@@ -1,7 +1,6 @@
 interface:
   display_name: "AI Frontend Dev Rules"
-  short_description: "Frontend architecture rules for AI-assisted development."
-  default_prompt: "Use $ai-frontend-dev-rules to keep frontend module boundaries, API integration, state/data ownership, and delivery reporting aligned with the project."
-
+  short_description: "Readable frontend code and practical module boundaries."
+  default_prompt: "Use $ai-frontend-dev-rules to write concise frontend code with clear names, appropriate control flow, grouped helpers, and project-native state and module boundaries."
 policy:
   allow_implicit_invocation: true

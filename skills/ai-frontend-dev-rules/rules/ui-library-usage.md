@@ -2,61 +2,31 @@
 
 ## About / 简介
 
-**EN:** Use the project's UI library or design system in a version-safe way: match the installed version, avoid deprecated APIs, and follow local styling and accessibility conventions.
+**EN:** Match the installed UI library and keep components, templates, styles, and accessibility readable.
 
-**中文：** 按项目实际使用的 UI 库或设计系统进行开发：匹配已安装版本，避免废弃 API，并遵循项目内样式与可访问性约定。
+**中文：** 匹配已安装 UI 库版本，保持组件接口、模板、样式与可访问性实现清晰。
 
-### Mandatory: match the installed UI library version
+## Version-correct APIs
 
-All UI library usage must match the exact version installed in the project. This includes APIs, props, parameters, events, slots, component names, types, theme tokens, and styling hooks.
+Identify the actual library/design system and installed version from package metadata, lockfiles, local types, or vendored source. Check props, events, slots, tokens, parameters, and styling hooks against that version.
 
-Do not use deprecated APIs in new or changed code when the installed version provides a supported replacement.
+When unsure, prefer installed types/source, then official documentation for that version; nearby working code provides project conventions. Do not copy a newer version's API into an older installation. Do not add deprecated usage when a supported replacement exists in the installed version. Migrate touched deprecated usage only where the local change is compatible; do not expand into an unrelated upgrade.
 
-## How to use
+## Component and template simplicity
 
-1. Identify the UI library or design system used by the project.
-2. Check the installed version from dependency files such as `package.json`, lockfiles, package manager metadata, framework manifests, or vendored package files.
-3. Use APIs, props, parameters, events, slots, types, and styling hooks that match that exact version.
-4. Do not copy API names, examples, or parameters from docs for a different major/minor version, generic tutorials, or model memory.
-5. Follow nearby code for styling strategy, naming, theming, form validation, and accessibility behavior.
+- Keep interfaces centered on meaningful data and actions. Avoid exposing many internal setters or mode booleans that let callers produce impossible combinations.
+- Use composition/slots/children when variants diverge substantially. Do not build a universal component whose behavior is mostly conditionals for unrelated screens.
+- Keep simple expressions and short event handlers in templates/rendering. Move substantial filtering, grouping, or workflow logic to named values/functions near the owner.
+- Data-drive repeated UI with the same structure. Keep genuinely different layouts explicit instead of creating a giant configuration renderer.
+- Use stable domain keys for changing/reordered lists; do not generate new keys on every render or use indices when identity can move.
+- Extract a UI component for a real responsibility or useful reuse, not merely to shorten a CSS class string. Use [layout rules](ui-module-split.md) for files and folders.
 
----
+## Styling and accessibility
 
-## 1. Version-safe API usage
+Use the project's theme tokens, scoped styles, CSS Modules, utility classes, CSS-in-JS, or existing mechanism. Prefer supported styling hooks over fragile internal DOM overrides. Verify portal/overlay styling attaches to the intended element in the installed version.
 
-Treat the installed dependency version as the source of truth. When unsure, prefer these sources in order:
+Keep native semantics and the library's keyboard, focus, labeling, validation, and error-description behavior. Do not replace buttons/links with clickable generic containers merely to reduce markup. Placeholder text does not replace an essential label. Preserve focus management for dialogs and other composite controls.
 
-1. Local type declarations or source files from the installed package.
-2. Official documentation for the exact installed version.
-3. Existing project code that is already compatible with the current dependency version.
+## Verify
 
-If a prop, event, slot, token, or parameter is missing from the installed version, do not use it. If the installed version marks an API as deprecated, follow the replacement documented for that same version.
-
-## 2. Semantic components and styling
-
-Use semantic UI library components where they match the required behavior. Style them through the project's established mechanism, such as theme tokens, CSS Modules, scoped styles, utility classes, CSS-in-JS, component props, design-system wrappers, or framework-native styling.
-
-Avoid ad-hoc DOM overrides unless the project already uses that pattern or the UI library has no supported styling hook. If custom overlay, portal, popup, dropdown, modal, or tooltip styles are changed, verify that the class or style hook attaches to the expected DOM for the installed version.
-
-## 3. Deprecated APIs
-
-Do not introduce deprecated APIs in new or changed code.
-
-If touched code already uses deprecated UI library APIs, migrate only the affected area when the replacement is supported by the installed version. Do not rewrite unrelated legacy usage unless the user asks for it.
-
-After edits, run the project verification that can reveal UI library warnings, such as dev server console checks, build, type check, lint, unit tests, or storybook checks. Fix new deprecation warnings caused by the change.
-
-## 4. Forms and accessibility
-
-Use the UI library's current form, validation, focus, keyboard, and accessibility APIs. Do not rely on placeholder-only labels for essential fields. Preserve keyboard navigation and screen-reader semantics when customizing components.
-
-When the design requires custom controls, keep native semantics or explicitly add labels, roles, focus management, and error descriptions according to the project's accessibility standard.
-
-## 5. Verification checklist
-
-- [ ] The UI library or design system and installed version were identified.
-- [ ] New or changed APIs, props, parameters, events, slots, and types match the installed version.
-- [ ] No deprecated API was introduced.
-- [ ] Existing deprecated usage was migrated only where it was touched and the installed version supports the replacement.
-- [ ] Styling follows existing project conventions and uses supported hooks/tokens.
-- [ ] Form and interactive components preserve accessibility expectations.
+Run applicable type/lint/build checks and inspect changed interactions where needed. Confirm supported APIs, overlay styles, form errors, keyboard behavior, stable identity, and no new deprecation warnings. Static checking alone does not establish visual or accessibility behavior.

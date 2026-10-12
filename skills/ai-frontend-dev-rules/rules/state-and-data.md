@@ -2,75 +2,59 @@
 
 ## About / 简介
 
-**EN:** How to choose local state, feature state, shared stores, server-data caches, and request libraries while respecting the project's existing stack.
+**EN:** Keep state minimal, use the current framework's reactive model, and make async ownership explicit.
 
-**中文：** 约定如何选择局部状态、功能状态、共享 store、服务端数据缓存和请求库，并优先遵循项目已有技术栈。
+**中文：** 保持状态精简，遵循当前框架的响应式习惯，并明确异步调用、错误和清理的归属。
 
-## How to use
+## State ownership
 
-Start with the smallest state scope that satisfies the feature. Use libraries and patterns already present in the project. Do not install or download a new state/request library unless the user explicitly approves it after reviewing a comparison table.
+Use the smallest scope that satisfies actual consumers: component, nearby shared parent, feature, then genuinely shared app state. Do not create global state for an isolated page or duplicate a server cache in another store.
 
----
+- Derive values from their source instead of storing a second value and synchronizing it. Separate editable drafts, snapshots, optimistic changes, and undo history are valid when their independent lifecycle is intentional.
+- Use a status/variant for mutually exclusive phases (`idle`, `loading`, `success`, `error`) when it rules out impossible combinations. Keep independent flags for genuinely independent concerns.
+- Lift state for real shared consumers; do not create a hook/composable/store for every field. Use a reducer or state machine when actual transition complexity warrants it.
+- Reuse an existing query/cache/loader/resource's data, loading, and error states. Add retry, staleness, persistence, or caching only when the workflow requires them.
 
-## 1. Local UI state
+## Framework adaptation and lifecycle
 
-- Use component/view-local state for UI state that belongs to one component or a small subtree.
-- Keep derived values computed from source data instead of storing duplicate sources of truth.
-- Use reducers, state machines, computed values, or framework equivalents when transitions become complex.
+| Stack | Apply the principle using existing conventions |
+| --- | --- |
+| Vue | `computed` is normal derived state in both Options API and Composition API, not an optimization requiring a measured bottleneck. Use watchers for actual side effects, not copying a calculation into another ref. |
+| React | Calculate simple derived values during render. Use Effects for external synchronization, not for pure calculations or ordinary user-event logic. Do not add `useMemo` by default. |
+| Angular | Follow the installed version's component/service and reactive conventions; use the existing signal/computed or observable approach where appropriate. |
+| Svelte | Follow the installed version and project's reactive syntax; do not migrate legacy reactivity to newer APIs as incidental cleanup. |
+| Other stacks | Use native derivation and lifecycle mechanisms. Do not translate React hook rules mechanically into another framework. |
 
-## 2. Feature scope
+Keep user actions in event/workflow handlers. A short lifecycle callback can remain inline; extract a named operation when requests, transformations, conditions, and error handling obscure its purpose. Do not require a controller/service layer for simple work.
 
-- Lift state to the feature entry, a feature-level state module, a hook/composable/service, or another project-standard feature boundary when multiple child modules need it.
-- Keep feature providers, contexts, stores, or services close to the feature unless multiple features reuse them.
-- Keep form state, table state, filters, pagination, and selection state explicit and easy to reset.
+Effects, watchers, subscriptions, and requests must retain cleanup, cancellation, or stale-result handling when work can outlive its owner or be superseded. Preserve intentional order and avoid applying a stale response to a newer selection. Use existing framework/query-library support before building another mechanism.
 
-## 3. Global or shared state
+## Async calls and error ownership
 
-- Do not introduce global state for one-off pages or isolated widgets.
-- Use the existing global solution only when the data is genuinely shared across distant features, routes, sessions, or app shell concerns.
-- Keep global stores focused on durable app state. Avoid storing transient UI details globally unless the project already does this intentionally.
+**Do not use unary `void` before function calls.** This includes `void submit()`, `void refresh()`, `() => void reload()`, and `void (async () => { ... })()`. This is an explicit coding convention; unary `void` discards a result and does not handle a rejection.
 
-## 4. Server data
+The restriction is about expressions, not types. Keep legitimate `(): void`, `() => void`, and `Promise<void>` annotations. Use syntax-aware linting/review if enforcing it automatically; searching for the word `void` cannot distinguish these cases.
 
-- Prefer the project's existing request, cache, query, loader, resource, or service pattern.
-- Keep loading, empty, error, retry, and stale states explicit.
-- Avoid request waterfalls and duplicated fetching for the same data.
-- Keep mutation success/failure behavior aligned with project UX and API rules.
+| Call meaning | Required handling |
+| --- | --- |
+| Synchronous call | Call it directly; discard an unused result normally |
+| Caller needs completion, result, or error propagation | `await` it in an appropriate async flow, or return the promise to a caller that owns it |
+| Deliberate background work | Use the project's task owner, or attach explicit rejection handling; its error handler must not itself leave an unhandled rejection |
+| Framework/library owns a promise | Return/pass it through its documented async API; verify that the API actually awaits or handles failure |
+| UI callback API ignores its return value | Handle failure in the callback or use a synchronous callback that attaches rejection handling |
 
-## 4.1 Effect / lifecycle data orchestration
+Do not just remove `void` and leave a rejecting promise unowned. Do not mechanically add `await` and serialize independent work. A callback typed `() => void` alone does not prove that a returned promise is handled. Do not evade the rule with casts, discard wrappers, or lint suppressions.
 
-- Keep lifecycle hooks focused on triggering work and cleaning it up. Lifecycle entry points should mainly express when work starts, when it should rerun, and how it is disposed.
-- Move non-trivial async work into named functions, services, hooks, composables, controllers, stores, or framework-equivalent modules. This includes request orchestration, sequential or parallel calls, result normalization, loading state updates, and failure handling.
-- Name async functions by user-facing or domain intent, such as `loadOptions`, `refreshList`, `syncProfile`, or `submitForm`, instead of vague names that only describe implementation mechanics.
-- Make stale response handling explicit for async work started by lifecycle hooks. Account for unmounts, dependency changes, route changes, subscription disposal, cancellation, abort signals, or the framework's equivalent mechanism.
-- Choose data ownership by consumer scope. Keep data local when one component or view consumes it; lift it to a shared parent or feature-level state module when nearby modules share it; promote it to shared or global state only when reuse crosses feature, route, session, or ownership boundaries.
-- Treat complex lifecycle callbacks as a split signal. If a lifecycle callback combines multiple requests, nested loops, data transformation, branching, loading/finally handling, and user-visible error logic, split the workflow into named units before adding more behavior.
+Start independent requests together when appropriate; keep dependent calls sequential. Choose `Promise.all` for collective failure semantics or `allSettled` when partial results must be handled. Neither choice automatically cancels other requests.
 
-## 4.2 New state/request library approval
+Catch errors where the code can recover, add useful context, or present the product's error state. Otherwise propagate to the known owner. Avoid stacked catch/log/toast layers, empty catches, unchanged catch-and-rethrow, and failure converted to `[]` or success-like defaults. Distinguish expected cancellation from an actionable failure using the project's convention. Cleanup belongs in the lifecycle owner or `finally` as appropriate.
 
-If a third-party state or request library not currently used by the project appears to be a better fit, do not install or download it immediately.
+See [async examples](../references/code-quality-examples.md#async-calls-without-unary-void).
 
-Before using it:
+## Dependencies
 
-1. Identify the current project state/request libraries and patterns.
-2. Identify the proposed third-party library and why it may be better.
-3. Present a comparison table to the user.
-4. Ask whether the user wants to adopt the new library.
-5. Only install/download/use the new library after the user confirms.
+Use existing state and request tools. If proposing a new library, explain its concrete benefit, tradeoffs, and cost against the current approach before adoption; a short comparison table helps when several options matter. Follow the user's dependency authorization requirements and do not install/download a new library without the required approval. Existing authorization for the specific dependency need not be requested again.
 
-Use this table format:
+## Verify
 
-| Option | Pros | Cons | Fit for this task |
-|--------|------|------|-------------------|
-| Current project library/pattern | Existing dependency, familiar to the codebase, no install needed | List limitations for this task | Explain whether it can satisfy the requirement |
-| Proposed third-party library | List concrete benefits for this task | New dependency, migration/learning burden, bundle impact, maintenance risk | Explain why it may be better |
-
-If the user does not confirm the new library, implement the feature with the project's existing state/request library or pattern.
-
-## 5. Checklist
-
-- [ ] State scope matches actual consumers.
-- [ ] No duplicate sources of truth were introduced.
-- [ ] Server data uses the project's existing request/cache pattern where available.
-- [ ] Async effects/subscriptions have cleanup or stale-response handling where needed.
-- [ ] No new state/request library was installed or used without user approval after a comparison table.
+Check source vs derived state, intentional drafts, success/failure ownership, overlapping requests, and disposal where relevant. Use the actual framework's behavior; a plain JavaScript calculation test does not prove lifecycle integration.

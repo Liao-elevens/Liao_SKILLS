@@ -2,55 +2,30 @@
 
 ## About / 简介
 
-**EN:** General frontend performance rules for data fetching, rendering, bundle size, loading behavior, and verification across frameworks.
+**EN:** Remove evident waste and optimize when actual workload or measurements justify the added complexity.
 
-**中文：** 面向任意前端技术栈的通用性能规范，覆盖数据请求、渲染更新、包体积、加载体验和交付校验。
+**中文：** 消除明显浪费，只在实际规模或测量结果支持时增加性能优化机制。
 
-## How to use
+## Avoid default optimization layers
 
-Use this file when writing, reviewing, or refactoring frontend code that affects data loading, rendering, lists, routing, bundle size, assets, or user-perceived responsiveness. Prefer the project's existing profiling, build, and monitoring tools.
+Do not add memoization, caches, debounce/throttle, virtualization, or elaborate indexes by default. Use them for measured bottlenecks, evident workload costs, or concrete behavioral/identity requirements. Document cache ownership and invalidation when adding a cache.
 
----
+Framework-native derived state is not the same as optional optimization: Vue `computed` can be the ordinary correct model without a benchmark. React's simple derived values can be calculated during render. Preserve framework-required stable identities and dependencies; see [framework adaptation](state-and-data.md#framework-adaptation-and-lifecycle).
 
-## 1. Data fetching
+## Fetching and rendering
 
-- Avoid serial request waterfalls when independent data can be requested in parallel.
-- Add cancellation, stale-response guards, or framework-equivalent cleanup for async work that can outlive the current view.
-- Keep loading, empty, error, and retry states explicit and aligned with project UX.
-- Reuse the project's server-data cache/request layer when it exists.
-- Avoid refetching stable data on every render/update/navigation unless the product requires it.
+- Remove accidental serial waterfalls for independent calls without changing dependency or failure semantics. Use [async ownership](state-and-data.md#async-calls-and-error-ownership) for sequencing, cancellation, and stale responses.
+- Reuse existing server caches and avoid refetching stable data on every update unless required by freshness semantics.
+- Keep updates near actual consumers; avoid unnecessary broad state propagation. Do not split components solely on an assumed rerender benefit.
+- Use stable list identity and consider pagination/virtualization when data size and UX justify it.
+- Watch for repeated full scans in hot paths, growing accumulator copies, and redundant conversions; use [collection rules](control-flow-and-data-transformations.md#collections) without optimizing tiny one-off work speculatively.
 
-## 2. Rendering and updates
+## Bundles and loading
 
-- Avoid broad parent state updates that force unrelated child UI to rerender or recompute.
-- Keep derived values computed from source data instead of duplicating state.
-- Use memoization, computed values, selectors, or framework equivalents only when there is clear churn, expensive work, or measured benefit.
-- Keep list keys stable. Avoid index keys for mutable lists.
-- Virtualize or paginate large lists only when the list size and UX justify it.
+Preserve route and browser/server boundaries. Keep rarely used heavy editors, charts, maps, and media paths lazy when the framework supports it and the workload warrants it. Grouping utilities must not pull a heavy or incompatible dependency into every consumer.
 
-## 3. Bundle and loading
+Use existing helpers or native APIs before adding a dependency. Follow dependency authorization requirements. Keep assets sized for their actual use and avoid loading large media in the initial bundle accidentally.
 
-- Preserve route/page/screen-level lazy loading when the project uses it.
-- Do not add heavy dependencies when a small existing helper or native API is enough.
-- Split rarely used heavy code paths, editors, charts, maps, or media tools when supported by the bundler/framework.
-- Keep assets appropriately sized and compressed. Avoid importing large media into the initial bundle by accident.
+## Verify the claim
 
-## 4. Verification
-
-Use the project's available verification path: build, type check, lint, tests, storybook, bundle analyzer, performance profiler, browser performance tools, or monitoring dashboards.
-
-If no formal performance tool exists, at minimum check:
-
-1. Independent requests are not accidentally serialized.
-2. New dependencies are necessary and scoped.
-3. Large lists have stable keys and reasonable rendering behavior.
-4. New loading/error states do not block unrelated content.
-
-## 5. Checklist
-
-- [ ] No obvious fetch waterfall was introduced.
-- [ ] Async work has stale-response or cleanup handling where needed.
-- [ ] State changes are scoped to actual consumers.
-- [ ] Large lists use stable keys and avoid unnecessary full rerenders.
-- [ ] Bundle impact was considered for new dependencies or heavy modules.
-- [ ] Project-appropriate verification was run or the gap was documented.
+Use available profiling, bundle analysis, request traces, or representative measurements to substantiate a performance claim. Type/lint/build success only shows compatibility. For ordinary changes, check relevant evident costs and report any performance claim that remains unmeasured; do not invent benchmark work without a concern.

@@ -63,7 +63,9 @@ The plugin packages local skill instructions, one local static triage script for
 
 ## Pre-Submission Checks
 
-- `python3 <path-to-validate_plugin.py> .`
+- Run checks from the repository root, which is also the plugin root. Maintain only `.codex-plugin/plugin.json` and the skill sources under `skills/`; do not recreate a duplicate distribution directory.
+- `python3 scripts/check_plugin.py`
+- `python3 scripts/test_check_plugin.py`
 - `python3 skills/agent-skill-security-auditor/scripts/scan_skill.py skills/ai-frontend-dev-rules --policy marketplace --format markdown`
 - `python3 skills/agent-skill-security-auditor/scripts/scan_skill.py skills/agent-skill-security-auditor --policy marketplace --format markdown`
 - `python3 skills/agent-skill-security-auditor/scripts/scan_skill.py skills/novel-workbench --policy marketplace --format markdown`
@@ -72,5 +74,7 @@ The plugin packages local skill instructions, one local static triage script for
 - Confirm `README.md` includes Codex install instructions.
 - Confirm `docs/PRIVACY.md` and `docs/TERMS.md` are current.
 - Confirm `assets/logo.png` renders correctly for both logo and composer icon.
+- Confirm the explicit `skills` array exposes only the four approved skills. Unlisted local skills must not be added as an incidental packaging change.
+- Verify root-entry discovery and skill loading with a compatible client. Desktop-bundled Codex `0.162.0-alpha.17.2` passed these checks; CLI `0.132.0` did not. Static checks alone do not verify a fresh installation.
 - Confirm the GitHub repository is public and the latest release/tag is pushed.
 - Confirm `plugin.json` version is bumped before submitting a material update.

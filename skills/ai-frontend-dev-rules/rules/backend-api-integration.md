@@ -2,66 +2,35 @@
 
 ## About / 简介
 
-**EN:** HTTP calls should live behind the project's dedicated API/service layer. Pages, views, and components should call typed wrappers, hooks, services, or adapters rather than owning low-level request details.
+**EN:** Reuse the project's request boundary and keep transport, contracts, adaptation, and product errors clearly owned.
 
-**中文：** HTTP 调用应收口到项目已有的 API / service 封装层。页面、视图和组件应调用类型明确的封装方法、hooks、services 或 adapters，而不是直接承载底层请求细节。
+**中文：** 复用项目已有请求边界，明确传输、契约、数据转换与用户错误提示的职责。
 
-## How to use / 使用方法
+## Existing boundary first
 
-**EN:** First identify the project's existing API layer, request client, environment configuration, auth handling, error handling, and data adaptation conventions. Follow those conventions before introducing new folders, clients, wrappers, or response shapes.
+Identify the current request client, auth handling, API/generated contracts, loader/service pattern, and error convention before adding another abstraction. Keep raw HTTP details out of presentational components when a project boundary already owns them.
 
-**中文：** 先识别项目已有的 API 层、请求客户端、环境配置、鉴权处理、错误处理和数据适配约定。新增目录、客户端、封装方法或响应结构前，应优先沿用已有约定。
+If none exists, add the smallest useful feature-local boundary. Framework-native loaders, server actions, services, and resources can already provide it; do not force every stack into an API → repository → service → hook chain.
 
----
+- A thin API function is useful when it owns the endpoint, contract, transport configuration, or stable public interface. Do not remove it solely because it is short; see [abstraction decisions](functions-and-abstraction.md#wrappers-and-generalization).
+- Keep request/response contracts with their API/generated owner. Transform DTOs into view models only when the shape or responsibility actually differs.
+- Put non-trivial adaptation near its owner, away from repeated rendering. Trivial local display expressions can remain local.
+- Name exported operations clearly (`fetchProfile`, `submitResult`, or domain-qualified forms when caller context requires them). Preserve backend names at the external contract.
 
-## 1. Configuration and environments
+## Responses and errors
 
-- Use the project's existing environment/configuration mechanism for base URLs, feature flags, mock endpoints, and public runtime settings.
-- If the project has multiple environment files, keep required keys consistent across those files.
-- Do not commit secrets, private tokens, or production-only credentials into frontend configuration.
-- Mark placeholder, mock, or unknown endpoints explicitly with a `TODO`, mock flag, or project-standard marker.
+Use the existing definitions of transport and business success; an HTTP success response can still represent a documented business failure. Preserve the project's authentication, token refresh, redirect, and permission behavior for `401`/`403`.
 
-## 2. API layer structure
+Validate untrusted data where the project's policy and risk require it, then return the established internal contract. Do not revalidate in each consumer; follow [type and trust-boundary rules](type-standards.md#contract-trust-and-validation-boundaries).
 
-- Use the project's existing API, service, client, repository, or data-access layer.
-- If no API layer exists, create the smallest project-appropriate boundary near the feature first; promote it to shared code only when multiple features need it.
-- Keep HTTP transport details, request typing, and response typing out of page/view/component files.
-- Put backend DTOs, frontend view models, and UI option data at the boundary where the project convention expects them. Do not mix all three inside rendering components.
-- Keep data adaptation close to the boundary that owns the transformation: API adapter, feature service, hook/composable, or view-model utility.
+Show product errors at the existing workflow/error owner; avoid API wrappers that only add generic toasts and duplicate upper-layer notifications. Handle or propagate failures intentionally using [async error ownership](state-and-data.md#async-calls-and-error-ownership). Keep loading, empty, and failure states distinct.
 
-## 3. Rules
+## Configuration and unknown contracts
 
-| Area | Rule |
-| --- | --- |
-| Existing conventions | Reuse the project's request client, auth flow, environment config, and error/display patterns before adding new ones. |
-| No raw HTTP in UI | Avoid scattered `fetch`, `axios`, or equivalent direct request calls in pages, views, and presentational components when the project has an API/service boundary. |
-| Auth failures | Handle `401` / `403` according to the project's login, refresh-token, redirect, or permission-denied convention. |
-| Transport success | Define transport success using the project's request library or HTTP status convention. Non-success responses must be handled or propagated intentionally. |
-| Business success | If the backend has business status fields such as `code`, `success`, or `message`, parse them at the API/service boundary or call site according to existing project convention. |
-| User-visible failure | Show user-visible errors at the workflow/call site using product copy and the project notification pattern. Avoid low-level API wrappers whose only role is to show generic failure messages. |
-| Types and schemas | Use the project's established contract mechanism. Do not combine static typing and repeated runtime validation by default. When runtime validation is explicitly required for an untrusted API boundary, perform it once in the API client, adapter, or generated-client boundary and return a concrete trusted type downstream. |
-| Data adaptation | Keep DTO-to-view-model conversion out of render-heavy components unless the transformation is trivial and local. |
-| Comments | Add comments or JSDoc when the endpoint, business meaning, or transformation is not obvious, using the project's normal documentation language. |
-| Errors | Handle or propagate errors intentionally; no empty `catch`. |
-| Unknown contracts | Do not guess endpoint paths, params, or response fields. Use an explicit mock/TODO marker until the contract is confirmed. |
-| Loading / empty / error | Match the project's established loading, empty, retry, and error-state UI patterns. |
+Use the existing configuration mechanism for public base URLs and runtime settings. Public frontend configuration must not contain secrets. This skill does not authorize reading or changing sensitive environment files; follow the user's and project's access rules. Check permitted configuration schemas/examples for key consistency rather than exposing sensitive values.
 
-## 4. Naming
+Do not guess endpoint paths, parameters, enum values, or response fields. Confirm the contract, or use an explicitly agreed mock/stub and report its limitation. A TODO/mock marker does not make an unfinished integration complete.
 
-- Use clear verb + resource names for API functions, such as `fetchUserProfile`, `submitLessonResult`, or the project's equivalent naming convention.
-- Use backend contract names for DTOs and frontend domain names for view models when the project distinguishes them.
-- Avoid generic names such as `requestData`, `getList`, or `handleApi` when a domain-specific name is available.
+## Verify
 
-## 5. Checklist
-
-- [ ] Existing API/service/request conventions were identified before adding new API code.
-- [ ] No page/view/component owns low-level HTTP details when a service boundary exists.
-- [ ] Environment/config keys follow the project's existing mechanism and are consistent where required.
-- [ ] Auth failure behavior follows the project's login/permission convention.
-- [ ] Transport success and business success are both handled according to the project contract.
-- [ ] User-visible failures use product copy and the project notification pattern at the workflow/call site.
-- [ ] Request params, response payloads, and adapted frontend models use one clearly owned contract mechanism; any required runtime validation occurs once at the designated boundary.
-- [ ] Pages, components, hooks/composables, and stores do not revalidate data already returned as a trusted type by the API/service boundary.
-- [ ] DTO-to-view-model conversion has a clear owner.
-- [ ] Unknown endpoints or fields are marked as mock/TODO rather than guessed.
-- [ ] Errors are handled or propagated intentionally; no empty `catch`.
+Check actual request parameters, success/business-failure handling, authentication behavior, mapping, and user-visible errors for the affected workflow. Preserve runtime and lazy-loading boundaries when moving request code.
